@@ -1,0 +1,183 @@
+/* ===========================================================================
+   components.css — cards suaves, formulário, botões, modal de QR, theme toggle
+   Direção: minimal calmo (sem ruído).
+   =========================================================================== */
+
+/* ---------- ícone-botão ---------- */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition: background 160ms ease, color 160ms ease;
+}
+.icon-btn:hover { background: var(--surface-2); color: var(--text); }
+.icon-btn svg { width: 19px; height: 19px; }
+
+/* theme toggle (mostra ícone conforme o tema) */
+.theme-toggle .ic-moon { display: none; }
+[data-theme="dark"] .theme-toggle .ic-sun { display: none; }
+[data-theme="dark"] .theme-toggle .ic-moon { display: inline-flex; }
+
+/* ---------- lista de cards (suaves) ---------- */
+.cards { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+.card:hover, .card:focus-within {
+  transform: translateY(-1px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-2);
+}
+
+.card__order {
+  flex: none;
+  width: 1.6em;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.card__body { flex: 1; min-width: 0; }
+.card__link { display: block; }
+/* stretched link: card inteiro vira alvo de toque */
+.card__link::after { content: ""; position: absolute; inset: 0; z-index: var(--z-card-link); }
+.card__title { display: block; font-weight: 600; font-size: var(--fs-md); }
+.card__subtitle {
+  display: block;
+  margin-top: 1px;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* seta (afordância principal, discreta) */
+.card__arrow {
+  flex: none;
+  display: flex;
+  color: var(--text-muted);
+  transition: transform 200ms ease, color 200ms ease;
+}
+.card__arrow svg { width: 18px; height: 18px; }
+.card:hover .card__arrow, .card:focus-within .card__arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+/* ações (acima do stretched link) — discretas */
+.card__actions { position: relative; z-index: var(--z-card-actions); display: flex; gap: 2px; flex: none; }
+.card__actions .icon-btn:hover { color: var(--accent); background: var(--accent-weak); }
+.card__actions .icon-btn--danger:hover { color: var(--danger); background: transparent; }
+
+/* ---------- estado vazio ---------- */
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  padding: var(--sp-8) var(--sp-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+/* ---------- formulário ---------- */
+.form-panel {
+  padding: var(--sp-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+}
+.form-panel__title { font-size: var(--fs-lg); margin-bottom: var(--sp-5); }
+
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--sp-5); }
+.field > label { font-size: var(--fs-sm); font-weight: 500; }
+.field .req { color: var(--accent); }
+.field .opt { color: var(--text-muted); font-weight: 400; }
+
+.input {
+  height: 46px;
+  padding: 0 var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.input::placeholder { color: var(--text-muted); }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-weak); }
+.input[aria-invalid="true"] { border-color: var(--danger); }
+
+.helper { font-size: var(--fs-xs); color: var(--text-muted); }
+
+.error { display: none; align-items: center; gap: 6px; font-size: var(--fs-xs); color: var(--danger); }
+.error.is-visible { display: flex; }
+.error svg { width: 14px; height: 14px; flex: none; }
+
+.form-actions { display: flex; gap: var(--sp-3); margin-top: var(--sp-2); }
+
+/* ---------- botões ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  transition: background 160ms ease, border-color 160ms ease, opacity 160ms ease;
+}
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.btn--primary { background: var(--accent); color: var(--accent-ink); }
+.btn--primary:hover:not(:disabled) { filter: brightness(.95); }
+.btn--primary.is-success { background: var(--success); }
+
+.btn--ghost { background: transparent; border: 1px solid var(--border-strong); color: var(--text); }
+.btn--ghost:hover { background: var(--surface-2); }
+
+/* ---------- modal QR ---------- */
+.qr-modal {
+  margin: auto;
+  width: min(92vw, 360px);
+  padding: var(--sp-6);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-2);
+}
+.qr-modal::backdrop { background: rgba(16, 18, 22, .45); }
+.qr-modal[open] { animation: modalIn 180ms ease-out; }
+@keyframes modalIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.qr-modal__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
+.qr-modal__title { font-size: var(--fs-lg); }
+
+.qr-plate {
+  background: var(--qr-plate);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-4);
+  margin: var(--sp-4) 0;
+  display: grid;
+  place-items: center;
+}
+.qr-plate canvas, .qr-plate img { display: block; }
+
+.qr-modal__url { font-size: var(--fs-xs); color: var(--text-muted); text-align: center; word-break: break-all; }
+.qr-modal__actions { display: flex; gap: var(--sp-3); margin-top: var(--sp-4); }
+.qr-modal__actions .btn { flex: 1; }
