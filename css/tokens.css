@@ -15,11 +15,11 @@
   --text: #1B1A18;
   --text-muted: #76726B;
 
-  --accent: #0F766E;        /* teal sóbrio (AA sobre claro) */
-  --accent-weak: rgba(15, 118, 110, .10);
+  --accent: #4D7C2A;        /* verde musgo (AA ~4.7:1 sobre claro) */
+  --accent-weak: rgba(77, 124, 42, .10);
   --accent-ink: #FFFFFF;
-  --focus: rgba(15, 118, 110, .9);
-  --wash: rgba(15, 118, 110, .07);   /* cor espalhada (wash radial do fundo) */
+  --focus: rgba(77, 124, 42, .9);
+  --wash: rgba(77, 124, 42, .07);   /* cor espalhada (wash radial do fundo) */
 
   --danger: #B42318;
   --success: #0E7C5A;
@@ -57,11 +57,11 @@
   --text: #E9E8E5;
   --text-muted: #9B9892;
 
-  --accent: #3BC9B8;
-  --accent-weak: rgba(59, 201, 184, .14);
-  --accent-ink: #0A0F0E;
-  --focus: rgba(59, 201, 184, .9);
-  --wash: rgba(59, 201, 184, .08);
+  --accent: #8FBF52;        /* verde musgo mais claro p/ ler no charcoal */
+  --accent-weak: rgba(143, 191, 82, .16);
+  --accent-ink: #0C1A05;
+  --focus: rgba(143, 191, 82, .9);
+  --wash: rgba(143, 191, 82, .08);
 
   --danger: #F87171;
   --success: #34D399;

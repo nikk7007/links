@@ -17,26 +17,37 @@ Decisões tomadas com o usuário:
 ## Estrutura de arquivos
 ```
 links/
-├── index.html             # estrutura da página
-├── css/
-│   ├── tokens.css         # design tokens: cores, espaçamentos, raios, fontes (CSS variables)
-│   ├── base.css           # reset/normalização + estilos base (body, tipografia)
-│   ├── layout.css         # layout da página (container, header, grid/empilhamento)
-│   └── components.css      # estilos de componentes: card, formulário, botões, modal QR
-├── js/
+├── index.html             # VIEW PÚBLICA (read-only): perfil + cards + QR p/ compartilhar
+├── admin/
+│   └── index.html         # PAINEL ADMIN: tudo da view + formulário add/editar/remover
+├── css/                   # compartilhado pelas duas páginas
+│   ├── tokens.css         # design tokens: cores, espaçamentos, raios (CSS variables, 2 temas)
+│   ├── base.css           # reset/normalização + tipografia base
+│   ├── layout.css         # fundo, container, header/perfil
+│   └── components.css     # card, formulário, botões, modal QR, theme toggle
+├── js/                    # compartilhado pelas duas páginas
 │   ├── mock.js            # dados seed dos cards (array de objetos)
 │   ├── store.js           # estado em memória + operações (add/edit/remove/sort)
-│   ├── ui.js              # render dos cards e binding do formulário
+│   ├── ui.js              # render dos cards + modal QR; form só quando há #card-form (admin)
 │   ├── qr.js              # wrapper para gerar QR via lib offline
-│   └── app.js             # ponto de entrada: inicializa store + ui
+│   └── app.js             # ponto de entrada: theme toggle + liga store↔ui
 ├── vendor/
 │   └── qrcode.min.js      # biblioteca de QR offline (vendorizada localmente)
 └── docs/
-    └── plano.md           # cópia desta documentação de planejamento no projeto
+    ├── plano.md           # esta documentação
+    └── design.md          # design system (visual)
 ```
 
-`index.html` importa os CSS na ordem `tokens → base → layout → components` e os JS no fim do
-`<body>` na ordem `vendor/qrcode.min.js → js/mock.js → js/store.js → js/qr.js → js/ui.js → js/app.js`.
+**Modos:** o `ui.js` detecta o modo pela presença do formulário (`#card-form`). A view pública
+(`index.html`) não tem formulário → cards renderizam só o botão de QR (sem editar/remover). O admin
+(`admin/index.html`) tem o formulário → cards ganham editar/remover e o painel de add/editar.
+As páginas usam os **mesmos** CSS/JS (o admin referencia com `../`).
+
+> Separação **estrutural** apenas. O admin ainda não tem autenticação e os dados são em memória
+> (seed do `mock.js`) — proteção de acesso e persistência ficam para a infra depois.
+
+Ordem dos assets: CSS `tokens → base → layout → components`; JS no fim do `<body>`
+`vendor/qrcode.min.js → mock.js → store.js → qr.js → ui.js → app.js`.
 
 ## Modelo de dados (`js/mock.js`)
 Exporta (via `window.MOCK_LINKS` ou `export`) um array de objetos:

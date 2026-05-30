@@ -11,7 +11,7 @@ Documento de referência visual. Fonte-da-verdade que guia `index.html` + `css/`
 | Vibe | **Calma, minimalista, editorial** — arejada e atemporal |
 | Estilo | **Cards limpos e suaves**: borda 1px sutil, cantos macios, sombra leve. Sem ruído. |
 | Base | **Claro "papel quente"** (padrão) + **escuro charcoal sereno** via toggle |
-| Cor | Neutros quentes + **1 accent sóbrio (teal)** usado com parcimônia |
+| Cor | Neutros quentes + **1 accent sóbrio (verde musgo)** usado com parcimônia |
 | Tipografia | **Fraunces** (serif editorial, nome/títulos) + **Hanken Grotesk** (sans limpa, corpo) |
 
 **Histórico:** v1 era glass/gradiente navy→ciano = "cara de IA"; v2 neo-brutalista ficou **poluída**.
@@ -21,7 +21,7 @@ um único detalhe de cor. Editorial e humano.
 ## 1. Princípios
 1. **Espaço em primeiro lugar** — respiro generoso; o vazio faz parte do design.
 2. **Hierarquia por tipografia**, não por cor/efeito — serif elegante para o nome, sans calma no resto.
-3. **1 accent, com parcimônia** — teal aparece só na seta (hover), foco e ações; nunca enche a tela.
+3. **1 accent, com parcimônia** — o verde musgo aparece só na seta (hover), foco e ações; nunca enche a tela.
 4. **Suave, não chamativo** — borda 1px, sombra leve, cantos macios; nada de gradiente/glow/grid/sombra dura.
 5. **Acessível** — AA, alvos ≥44px, foco visível, `prefers-reduced-motion`. Mobile-first.
 
@@ -30,9 +30,9 @@ Neutros + 1 accent. `:root` (claro) + `[data-theme="dark"]` (charcoal). Sem hex 
 
 **Claro (padrão):** `--bg #FBFAF8` (papel quente) · `--surface #FFFFFF` (card) · `--surface-2 #F4F2EE`
 (inputs) · bordas `--border rgba(24,22,18,.10)` / `--border-strong …18` · `--text #1B1A18` ·
-`--text-muted #76726B` · `--accent #0F766E` (teal) · `--accent-weak` (10%) · `--danger #B42318` · `--success #0E7C5A`.
+`--text-muted #76726B` · `--accent #4D7C2A` (verde musgo) · `--accent-weak` (10%) · `--danger #B42318` · `--success #0E7C5A`.
 **Escuro:** `--bg #16181D` · `--surface #1D2026` · `--text #E9E8E5` · `--text-muted #9B9892` ·
-`--accent #3BC9B8`. Contraste suave, sem brilho.
+`--accent #8FBF52`. Contraste suave, sem brilho.
 **Forma/elevação:** `--radius 14px` / `--radius-sm 10px`; sombras leves `--shadow-1` (1px) e `--shadow-2` (8–10px difusa).
 **QR:** placa `#FFFFFF` sempre.
 

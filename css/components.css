@@ -100,6 +100,15 @@
 .card__actions .icon-btn:hover { color: var(--accent); background: var(--accent-weak); }
 .card__actions .icon-btn--danger:hover { color: var(--danger); background: transparent; }
 
+/* link de texto discreto (ex.: voltar à página pública no admin) */
+.text-link {
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  border-bottom: 1px solid transparent;
+  transition: border-color 160ms ease;
+}
+.text-link:hover { border-color: var(--accent); }
+
 /* ---------- estado vazio ---------- */
 .empty {
   text-align: center;
@@ -145,7 +154,7 @@
 .error.is-visible { display: flex; }
 .error svg { width: 14px; height: 14px; flex: none; }
 
-.form-actions { display: flex; gap: var(--sp-3); margin-top: var(--sp-2); }
+.form-actions { display: flex; justify-content: flex-end; gap: var(--sp-3); margin-top: var(--sp-2); }
 
 /* ---------- botões ---------- */
 .btn {
