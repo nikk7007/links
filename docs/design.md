@@ -52,6 +52,11 @@ Neutros + 1 accent. `:root` (claro) + `[data-theme="dark"]` (charcoal). Sem hex 
   com ações QR/editar/remover acima (z-index maior), discretas (ícone muted; hover = accent suave).
   **Hover/focus:** `translateY(-1px)` + `--shadow-2` + borda um pouco mais forte; a **seta desliza 3px**
   e ganha a cor accent. Movimento mínimo, elegante.
+- **Pasta (accordion):** cabeçalho `<button>` (ícone pasta + título + subtítulo + chevron), sem URL/QR;
+  abre **abaixo** os links filhos (uma aberta por vez, começam fechadas). Expansão suave via
+  `grid-template-rows 0fr→1fr`; chevron rotaciona 180° (estado não só por cor); conteúdo `inert`
+  quando fechado; `aria-expanded`/`aria-controls`; filhos com leve recuo e superfície mais discreta.
+  (UI guiada pela skill ui-ux-pro-max.)
 - **Formulário:** painel `--surface` borda 1px + sombra leve; labels peso 500 (sem caixa-alta);
   inputs `--surface-2`, foco = borda accent + ring suave `--accent-weak`; erro com ícone+texto (`aria-live`),
   validação no `blur`. CTA primário (accent) + "Cancelar" (ghost). Flash "Salvo!".

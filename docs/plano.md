@@ -49,13 +49,27 @@ As páginas usam os **mesmos** CSS/JS (o admin referencia com `../`).
 Ordem dos assets: CSS `tokens → base → layout → components`; JS no fim do `<body>`
 `vendor/qrcode.min.js → mock.js → store.js → qr.js → ui.js → app.js`.
 
-## Modelo de dados (`js/mock.js`)
-Exporta (via `window.MOCK_LINKS` ou `export`) um array de objetos:
+## Modelo de dados (`js/mock.js` / `js/store.js`)
+Array de itens (links e pastas):
 ```js
-{ id: "1", title: "Meu GitHub", subtitle: "código e projetos", url: "https://github.com/...", order: 1 }
+// link de topo
+{ id, kind:"link", parentId:null, title, subtitle?, url, order }
+// pasta (1 nível, sempre no topo, sem url)
+{ id, kind:"folder", parentId:null, title, subtitle?, order }
+// link dentro de pasta
+{ id, kind:"link", parentId:"<id-da-pasta>", title, subtitle?, url, order }
 ```
-- `subtitle` é opcional (pode ser `""`/ausente → card não renderiza a linha do subtítulo).
-- `order` é número inteiro; usado para ordenar a lista (`.sort((a,b) => a.order - b.order)`).
+- `kind` default `"link"`. `subtitle` opcional. `order` ordena entre **irmãos** (mesmo `parentId`).
+- `Store.getTree()` monta a árvore (topo + `children` de cada pasta); `renderCards` consome isso.
+- Remover uma pasta remove **em cascata** os links dentro dela.
+
+### Pastas (accordion)
+- **1 nível**, topo misto (links + pastas), **accordion** (uma aberta por vez, começam fechadas).
+- UI segue a skill **ui-ux-pro-max**: cabeçalho `<button>` com `aria-expanded`/`aria-controls`,
+  teclado, alvo ≥44px, chevron que rotaciona (estado não só por cor), expansão suave via
+  `grid-template-rows 0fr→1fr`, conteúdo `inert` quando fechado, respeita `prefers-reduced-motion`.
+- Admin: campo **Tipo** (Link/Pasta) e **Pasta pai**; ao escolher Pasta, o campo URL some
+  (progressive disclosure).
 
 ## `index.html`
 - `<header>` com avatar/título da página (placeholder) — área pessoal do dono.

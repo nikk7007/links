@@ -9,11 +9,15 @@ window.Store = (function () {
   }
 
   function normalize(l) {
+    const kind = l.kind === "folder" ? "folder" : "link";
     return {
       id: l.id || uid(),
+      kind: kind,
+      // pasta é sempre topo (1 nível) e não tem URL
+      parentId: kind === "folder" ? null : (l.parentId || null),
       title: (l.title || "").trim(),
       subtitle: (l.subtitle || "").trim(),
-      url: (l.url || "").trim(),
+      url: kind === "folder" ? "" : (l.url || "").trim(),
       order: Number.isFinite(Number(l.order)) ? Number(l.order) : 0,
     };
   }
@@ -33,6 +37,22 @@ window.Store = (function () {
     return links.find((l) => l.id === id) || null;
   }
 
+  // árvore (1 nível): itens de topo ordenados; pastas recebem `children`
+  function getTree() {
+    const sorted = getSorted();
+    const top = sorted.filter((l) => !l.parentId);
+    return top.map((item) =>
+      item.kind === "folder"
+        ? { ...item, children: sorted.filter((l) => l.parentId === item.id) }
+        : item
+    );
+  }
+
+  // links diretamente dentro de uma pasta
+  function childrenOf(folderId) {
+    return getSorted().filter((l) => l.parentId === folderId);
+  }
+
   function seed(data) {
     links = (data || []).map(normalize);
     emit();
@@ -50,8 +70,9 @@ window.Store = (function () {
     emit();
   }
 
+  // remover: se for pasta, remove a pasta E seus links (cascata)
   function remove(id) {
-    links = links.filter((l) => l.id !== id);
+    links = links.filter((l) => l.id !== id && l.parentId !== id);
     emit();
   }
 
@@ -59,5 +80,5 @@ window.Store = (function () {
     listeners.push(fn);
   }
 
-  return { seed, add, update, remove, get, getSorted, subscribe };
+  return { seed, add, update, remove, get, getSorted, getTree, childrenOf, subscribe };
 })();

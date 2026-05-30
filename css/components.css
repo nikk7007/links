@@ -100,6 +100,70 @@
 .card__actions .icon-btn:hover { color: var(--accent); background: var(--accent-weak); }
 .card__actions .icon-btn--danger:hover { color: var(--danger); background: transparent; }
 
+/* ---------- pasta (accordion) ---------- */
+.folder {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+  animation: riseIn 500ms cubic-bezier(.22, .61, .36, 1) both;
+}
+.folder.is-open { border-color: var(--border-strong); box-shadow: var(--shadow-2); }
+
+.folder__row { display: flex; align-items: center; gap: var(--sp-2); }
+
+/* cabeçalho é um <button> real (disclosure); ocupa a maior parte da linha */
+.folder__head {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  min-height: 56px;
+  padding: var(--sp-4) var(--sp-5);
+  text-align: left;
+  color: var(--text);
+  border-radius: var(--radius);
+}
+.folder__icon { display: flex; flex: none; color: var(--accent); }
+.folder__icon svg { width: 18px; height: 18px; }
+.folder__body { flex: 1; min-width: 0; }
+.folder__title { display: block; font-weight: 600; font-size: var(--fs-md); }
+.folder__subtitle {
+  display: block; margin-top: 1px;
+  font-size: var(--fs-sm); color: var(--text-muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.folder__chevron { flex: none; display: flex; color: var(--text-muted); transition: transform 220ms ease, color 220ms ease; }
+.folder__chevron svg { width: 20px; height: 20px; }
+.folder.is-open .folder__chevron { transform: rotate(180deg); color: var(--accent); }
+.folder__head:hover .folder__chevron { color: var(--accent); }
+
+.folder__actions { display: flex; gap: 2px; flex: none; padding-right: var(--sp-3); }
+.folder__actions .icon-btn:hover { color: var(--accent); background: var(--accent-weak); }
+.folder__actions .icon-btn--danger:hover { color: var(--danger); background: transparent; }
+
+/* painel: expande suave sem saber a altura (grid 0fr -> 1fr) */
+.folder__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 240ms ease;
+}
+.folder.is-open .folder__panel { grid-template-rows: 1fr; }
+.folder__panel-inner { overflow: hidden; }
+
+/* filhos: leve recuo + gap menor; cards mais discretos (hierarquia) */
+.folder__children {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-4) var(--sp-4) var(--sp-6);
+}
+.folder__children .card { box-shadow: none; background: var(--surface-2); }
+.folder__children .card:hover, .folder__children .card:focus-within { box-shadow: var(--shadow-1); }
+.folder__empty { padding: var(--sp-2) 0 var(--sp-4); font-size: var(--fs-sm); color: var(--text-muted); }
+
 /* link de texto discreto (ex.: voltar à página pública no admin) */
 .text-link {
   color: var(--accent);

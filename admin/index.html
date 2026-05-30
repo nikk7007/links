@@ -62,6 +62,14 @@
       <h2 class="form-panel__title" id="form-title">Adicionar link</h2>
       <form id="card-form" novalidate>
         <div class="field">
+          <label for="f-kind">Tipo</label>
+          <select class="input" id="f-kind" name="kind">
+            <option value="link">Link</option>
+            <option value="folder">Pasta</option>
+          </select>
+        </div>
+
+        <div class="field">
           <label for="f-title">Título <span class="req" aria-hidden="true">*</span></label>
           <input class="input" id="f-title" name="title" type="text" autocomplete="off"
                  required aria-describedby="e-title" placeholder="Ex.: GitHub" />
@@ -74,12 +82,19 @@
                  placeholder="Ex.: meus repositórios" />
         </div>
 
-        <div class="field">
+        <div class="field" id="field-url">
           <label for="f-url">URL <span class="req" aria-hidden="true">*</span></label>
           <input class="input" id="f-url" name="url" type="url" inputmode="url" autocomplete="off"
                  required aria-describedby="e-url url-help" placeholder="https://exemplo.com" />
           <span class="helper" id="url-help">https:// , mailto: ou tel:</span>
           <span class="error" id="e-url" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="field" id="field-parent">
+          <label for="f-parent">Pasta (pai) <span class="opt">(opcional)</span></label>
+          <select class="input" id="f-parent" name="parent">
+            <option value="">— nenhuma (topo) —</option>
+          </select>
         </div>
 
         <div class="field">
