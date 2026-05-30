@@ -7,7 +7,11 @@
   inset: 0;
   z-index: var(--z-bg);
   pointer-events: none;
-  background: var(--bg);
+  /* cor espalhada: wash radial bem sutil do accent, vindo do topo */
+  background:
+    radial-gradient(115% 70% at 50% -15%, var(--wash), transparent 55%),
+    var(--bg);
+  transition: background-color 350ms ease;
 }
 
 .container {
@@ -30,6 +34,7 @@
   align-items: flex-start;
   gap: var(--sp-2);
   padding-bottom: var(--sp-12);
+  animation: riseIn 550ms cubic-bezier(.22, .61, .36, 1) both;
 }
 .profile__top {
   display: flex;
@@ -46,11 +51,13 @@
   border-radius: 50%;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  color: var(--text);
+  color: var(--accent);
   font-family: "Fraunces", serif;
   font-size: var(--fs-xl);
   font-weight: 500;
+  transition: background-color 350ms ease, color 350ms ease, transform 250ms ease;
 }
+.avatar:hover { transform: rotate(-4deg); }
 
 .profile__name { font-size: clamp(var(--fs-2xl), 8vw, var(--fs-3xl)); }
 .profile__handle { font-size: var(--fs-sm); color: var(--text-muted); }

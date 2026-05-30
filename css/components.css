@@ -16,6 +16,10 @@
 .icon-btn:hover { background: var(--surface-2); color: var(--text); }
 .icon-btn svg { width: 19px; height: 19px; }
 
+/* graça no toggle de tema: o ícone gira de leve no hover */
+.theme-toggle svg { transition: transform 400ms cubic-bezier(.22, .61, .36, 1); }
+.theme-toggle:hover svg { transform: rotate(35deg); }
+
 /* theme toggle (mostra ícone conforme o tema) */
 .theme-toggle .ic-moon { display: none; }
 [data-theme="dark"] .theme-toggle .ic-sun { display: none; }
@@ -34,10 +38,12 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-1);
-  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  transition: transform 200ms ease, box-shadow 200ms ease,
+              border-color 200ms ease, background-color 350ms ease;
+  animation: riseIn 500ms cubic-bezier(.22, .61, .36, 1) both;
 }
 .card:hover, .card:focus-within {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   border-color: var(--border-strong);
   box-shadow: var(--shadow-2);
 }
@@ -48,13 +54,26 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+  transition: color 200ms ease;
 }
+.card:hover .card__order, .card:focus-within .card__order { color: var(--accent); }
 
 .card__body { flex: 1; min-width: 0; }
 .card__link { display: block; }
 /* stretched link: card inteiro vira alvo de toque */
 .card__link::after { content: ""; position: absolute; inset: 0; z-index: var(--z-card-link); }
-.card__title { display: block; font-weight: 600; font-size: var(--fs-md); }
+.card__title {
+  display: inline-block;
+  font-weight: 600;
+  font-size: var(--fs-md);
+  /* sublinhado teal que cresce no hover */
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size 280ms ease;
+}
+.card:hover .card__title, .card:focus-within .card__title { background-size: 100% 1.5px; }
 .card__subtitle {
   display: block;
   margin-top: 1px;
@@ -98,6 +117,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-1);
+  transition: background-color 350ms ease, border-color 350ms ease;
 }
 .form-panel__title { font-size: var(--fs-lg); margin-bottom: var(--sp-5); }
 
@@ -113,7 +133,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 350ms ease;
 }
 .input::placeholder { color: var(--text-muted); }
 .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-weak); }
@@ -138,8 +158,11 @@
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: var(--fs-sm);
-  transition: background 160ms ease, border-color 160ms ease, opacity 160ms ease;
+  transition: background 160ms ease, border-color 160ms ease,
+              opacity 160ms ease, transform 160ms ease;
 }
+.btn:hover:not(:disabled) { transform: translateY(-1px); }
+.btn:active:not(:disabled) { transform: translateY(0); }
 .btn:disabled { opacity: .55; cursor: not-allowed; }
 
 .btn--primary { background: var(--accent); color: var(--accent-ink); }

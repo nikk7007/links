@@ -19,6 +19,7 @@
   --accent-weak: rgba(15, 118, 110, .10);
   --accent-ink: #FFFFFF;
   --focus: rgba(15, 118, 110, .9);
+  --wash: rgba(15, 118, 110, .07);   /* cor espalhada (wash radial do fundo) */
 
   --danger: #B42318;
   --success: #0E7C5A;
@@ -60,6 +61,7 @@
   --accent-weak: rgba(59, 201, 184, .14);
   --accent-ink: #0A0F0E;
   --focus: rgba(59, 201, 184, .9);
+  --wash: rgba(59, 201, 184, .08);
 
   --danger: #F87171;
   --success: #34D399;
