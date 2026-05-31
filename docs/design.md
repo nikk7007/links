@@ -12,7 +12,7 @@ Documento de referência visual. Fonte-da-verdade que guia `index.html` + `css/`
 | Estilo | **Cards limpos e suaves**: borda 1px sutil, cantos macios, sombra leve. Sem ruído. |
 | Base | **Claro "papel quente"** (padrão) + **escuro charcoal sereno** via toggle |
 | Cor | Neutros quentes + **1 accent sóbrio (verde musgo)** usado com parcimônia |
-| Tipografia | **Fraunces** (serif editorial, nome/títulos) + **Hanken Grotesk** (sans limpa, corpo) |
+| Tipografia | **Young Serif** (serif display encorpada, nome/títulos) + **Hanken Grotesk** (sans limpa, corpo) |
 
 **Histórico:** v1 era glass/gradiente navy→ciano = "cara de IA"; v2 neo-brutalista ficou **poluída**.
 Esta v3 busca o oposto do poluído: **silêncio visual**, hierarquia por tipografia e espaço,
@@ -37,15 +37,15 @@ Neutros + 1 accent. `:root` (claro) + `[data-theme="dark"]` (charcoal). Sem hex 
 **QR:** placa `#FFFFFF` sempre.
 
 ## 3. Tipografia → `css/base.css`
-- **Display (h1–h3):** `Fraunces` 500 (serif editorial) — nome, títulos. `line-height` ~1.1.
+- **Display (h1–h3):** `Young Serif` 400 (serif display, x-height alto → nome reduzido) — nome, títulos. `line-height` ~1.1.
 - **Corpo / UI / labels:** `Hanken Grotesk` 400/500/600 — subtítulos, inputs, botões. `line-height` 1.55.
 - Caixa normal (sem MAIÚSCULAS forçadas). Body 16px. `tabular-nums` no número de ordem.
-- `<link>`: `Fraunces:opsz,wght@9..144,400..600` + `Hanken+Grotesk:400;500;600` (`display=swap`).
+- `<link>`: `Young+Serif` + `Hanken+Grotesk:400;500;600` (`display=swap`).
 
 ## 4. Componentes → `css/layout.css` + `css/components.css`
 - **Fundo:** cor sólida lisa (sem grid/blobs).
 - **Container:** centralizado, `max-width 560px`, padding generoso (respiro).
-- **Header:** avatar **círculo** discreto (monograma em Fraunces) à esquerda + theme toggle à direita;
+- **Header:** avatar **círculo** (foto no público com anel accent; monograma em Young Serif no admin) à esquerda + theme toggle à direita;
   nome em serif grande; handle e bio em sans muted. Calmo, sem kicker/ruído.
 - **Card (suave):** `--surface`, borda 1px `--border`, `--radius`, `--shadow-1`. Linha:
   `[nº ordem muted]` · `[título + subtítulo]` · `[seta]`. *Stretched link* (`<a>::after` cobre o card)

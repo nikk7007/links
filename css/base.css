@@ -19,8 +19,8 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: "Young Serif", Georgia, serif;
+  font-weight: 400; /* Young Serif só tem 400 — evita bold sintético */
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
@@ -69,6 +69,24 @@ ul { list-style: none; padding: 0; }
 @keyframes riseIn {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
+}
+
+/* troca de tema: fade suave em TODA a página, só durante a troca.
+   A classe .theme-anim é posta no <html> no clique e removida após o fade
+   (app.js) — assim não anima no load nem deixa os hovers lentos. */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-anim,
+  .theme-anim *,
+  .theme-anim *::before,
+  .theme-anim *::after {
+    transition:
+      background-color 350ms ease,
+      border-color 350ms ease,
+      color 350ms ease,
+      fill 350ms ease,
+      stroke 350ms ease,
+      box-shadow 350ms ease !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

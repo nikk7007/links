@@ -110,6 +110,7 @@ window.UI = (function () {
     const t = escapeHtml(folder.title);
     const open = folder.id === openFolderId;
     const panelId = "ch-" + folder.id;
+    const childCount = (folder.children || []).length;
     const li = document.createElement("li");
     li.className = "folder" + (open ? " is-open" : "");
     li.dataset.id = folder.id;
@@ -123,6 +124,7 @@ window.UI = (function () {
             <span class="folder__title">${t}</span>
             ${folder.subtitle ? `<span class="folder__subtitle">${escapeHtml(folder.subtitle)}</span>` : ""}
           </span>
+          ${childCount > 0 ? `<span class="folder__count">${childCount} ${childCount === 1 ? "link" : "links"}</span>` : ""}
           <span class="folder__chevron" aria-hidden="true">${ICONS.chevronDown}</span>
         </button>
         ${ADMIN ? `<div class="folder__actions">${adminActions(t)}</div>` : ""}

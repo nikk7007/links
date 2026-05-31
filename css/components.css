@@ -262,6 +262,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* contagem de links na pasta — pista discreta do conteúdo (recognition) */
+.folder__count {
+  flex: none;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
 .folder__chevron {
   flex: none;
   display: flex;
