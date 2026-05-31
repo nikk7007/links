@@ -203,7 +203,7 @@ window.UI = (function () {
     const formTitle = document.getElementById("form-title");
     const submitBtn = document.getElementById("submit-btn");
     const cancelBtn = document.getElementById("cancel-btn");
-    const kindSel = document.getElementById("f-kind");
+    const kindChk = document.getElementById("f-kind");
     const parentSel = document.getElementById("f-parent");
     const fieldUrl = document.getElementById("field-url");
     const fieldParent = document.getElementById("field-parent");
@@ -220,7 +220,7 @@ window.UI = (function () {
     };
     let editingId = null;
 
-    function isFolder() { return kindSel.value === "folder"; }
+    function isFolder() { return kindChk.checked; }
 
     // progressive disclosure: URL/pasta-pai só fazem sentido para link
     function applyKindVisibility() {
@@ -279,7 +279,7 @@ window.UI = (function () {
       setError("order", ""); return true;
     }
 
-    kindSel.addEventListener("change", applyKindVisibility);
+    kindChk.addEventListener("change", applyKindVisibility);
     fields.title.addEventListener("blur", validateTitle);
     fields.url.addEventListener("blur", validateUrl);
     fields.order.addEventListener("blur", validateOrder);
@@ -321,7 +321,7 @@ window.UI = (function () {
 
     function startEdit(item) {
       editingId = item.id;
-      kindSel.value = item.kind === "folder" ? "folder" : "link";
+      kindChk.checked = item.kind === "folder";
       applyKindVisibility();
       refreshParentOptions();
       parentSel.value = item.parentId || "";
@@ -339,7 +339,7 @@ window.UI = (function () {
     function resetForm() {
       editingId = null;
       form.reset();
-      kindSel.value = "link";
+      kindChk.checked = false;
       applyKindVisibility();
       refreshParentOptions();
       formTitle.textContent = "Adicionar";

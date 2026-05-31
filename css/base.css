@@ -25,6 +25,9 @@ h1, h2, h3 {
   letter-spacing: -0.01em;
 }
 
+/* o atributo [hidden] deve sempre vencer regras de display (.field/.btn usam flex) */
+[hidden] { display: none !important; }
+
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 input { font: inherit; color: inherit; }

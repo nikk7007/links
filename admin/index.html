@@ -62,11 +62,11 @@
       <h2 class="form-panel__title" id="form-title">Adicionar link</h2>
       <form id="card-form" novalidate>
         <div class="field">
-          <label for="f-kind">Tipo</label>
-          <select class="input" id="f-kind" name="kind">
-            <option value="link">Link</option>
-            <option value="folder">Pasta</option>
-          </select>
+          <label class="check">
+            <input type="checkbox" id="f-kind" name="kind" />
+            <span>É uma pasta</span>
+          </label>
+          <span class="helper">Pastas agrupam links e não têm URL.</span>
         </div>
 
         <div class="field">
