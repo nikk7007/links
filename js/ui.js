@@ -55,6 +55,11 @@ window.UI = (function () {
         .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "link"
     );
   }
+  // número de ordem: conceito de ordenação (admin). Na vitrine pública ele não
+  // significa nada para o visitante (parece ranking/passo) — então só no admin.
+  function orderBadge(n) {
+    return ADMIN ? `<span class="card__order">${pad(n)}</span>` : "";
+  }
   function adminActions(t) {
     if (!ADMIN) return "";
     return (
@@ -70,7 +75,7 @@ window.UI = (function () {
     li.className = "card";
     li.dataset.id = l.id;
     li.innerHTML = `
-      <span class="card__order">${pad(l.order)}</span>
+      ${orderBadge(l.order)}
       <div class="card__body">
         <a class="card__link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener noreferrer">
           <span class="card__title">${t}</span>
@@ -97,7 +102,7 @@ window.UI = (function () {
       <div class="folder__row">
         <button class="folder__head" type="button" data-action="toggle"
                 aria-expanded="${open ? "true" : "false"}" aria-controls="${panelId}">
-          <span class="card__order">${pad(folder.order)}</span>
+          ${orderBadge(folder.order)}
           <span class="folder__icon" aria-hidden="true">${ICONS.folder}</span>
           <span class="folder__body">
             <span class="folder__title">${t}</span>
