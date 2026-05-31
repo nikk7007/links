@@ -19,6 +19,8 @@ window.Store = (function () {
       subtitle: (l.subtitle || "").trim(),
       url: kind === "folder" ? "" : (l.url || "").trim(),
       order: Number.isFinite(Number(l.order)) ? Number(l.order) : 0,
+      // destaque só faz sentido para link de topo ("comece por aqui")
+      featured: kind === "link" && !l.parentId && !!l.featured,
     };
   }
 
@@ -102,6 +104,18 @@ window.Store = (function () {
     emit();
   }
 
+  // destaque: marca um link de topo como favorito (e desmarca os demais).
+  // clicar de novo no já-favorito remove o destaque (nenhum favorito).
+  function setFeatured(id) {
+    const target = links.find((l) => l.id === id);
+    if (!target) return;
+    const turnOn = !target.featured;
+    links.forEach((l) => {
+      if (l.kind === "link" && !l.parentId) l.featured = turnOn && l.id === id;
+    });
+    emit();
+  }
+
   // remover: se for pasta, remove a pasta E seus links (cascata)
   function remove(id) {
     links = links.filter((l) => l.id !== id && l.parentId !== id);
@@ -112,5 +126,5 @@ window.Store = (function () {
     listeners.push(fn);
   }
 
-  return { seed, add, update, remove, get, getSorted, getTree, childrenOf, subscribe };
+  return { seed, add, update, remove, setFeatured, get, getSorted, getTree, childrenOf, subscribe };
 })();

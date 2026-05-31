@@ -1,11 +1,12 @@
 /* mock.js — dados seed (substituídos por persistência real depois).
-   Modelo: { id, kind:"link"|"folder", parentId, title, subtitle?, url, order }
+   Modelo: { id, kind:"link"|"folder", parentId, title, subtitle?, url, order, featured? }
+   - featured (link de topo): marca "comece por aqui" — wash accent + selo na vitrine.
    - kind "folder": pasta (sem url; sempre no topo). Links com parentId = id da pasta ficam dentro.
    - kind "link" (padrão): link normal; parentId null = topo. */
 window.MOCK_LINKS = [
   // links soltos no topo
-  { id: "gh", title: "GitHub",   subtitle: "meus repositórios e projetos", url: "https://github.com/seu-usuario", order: 1 },
-  { id: "pf", title: "Portfólio", subtitle: "projetos selecionados",        url: "https://seu-site.dev",          order: 2 },
+  { id: "pf", title: "Portfólio", subtitle: "projetos selecionados",        url: "https://seu-site.dev",          order: 1, featured: true },
+  { id: "gh", title: "GitHub",   subtitle: "meus repositórios e projetos", url: "https://github.com/seu-usuario", order: 2 },
 
   // pasta "Social" + links filhos
   { id: "f-social", kind: "folder", title: "Redes sociais", subtitle: "me acompanhe por aí", order: 3 },

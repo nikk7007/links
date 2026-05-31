@@ -163,6 +163,42 @@
   background: transparent;
 }
 
+/* ---------- card em destaque ("comece por aqui") ---------- */
+/* 1 accent com parcimônia: leve wash + borda accent + selo textual (não só cor) */
+.card--featured {
+  background: var(--accent-weak);
+  border-color: var(--accent);
+}
+.card--featured:hover,
+.card--featured:focus-within {
+  border-color: var(--accent);
+}
+.card--featured .card__title {
+  font-size: var(--fs-lg);
+}
+/* selo: estrela + rótulo, acima do título (estado por texto, não só cor) */
+.card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 2px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--accent);
+}
+.card__badge svg {
+  width: 13px;
+  height: 13px;
+}
+/* estrela de favorito (admin): ativa = accent + preenchida */
+.card__actions .icon-btn--star.is-active {
+  color: var(--accent);
+}
+.card__actions .icon-btn--star.is-active svg {
+  fill: currentColor;
+}
+
 /* ---------- pasta (accordion) ---------- */
 .folder {
   background: var(--surface);

@@ -17,6 +17,7 @@ window.UI = (function () {
     chevronDown: `<svg ${A}><path d="m6 9 6 6 6-6"/></svg>`,
     folder: `<svg ${A}><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>`,
     alert: `<svg ${A}><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>`,
+    star: `<svg ${A}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
   };
 
   /* ---------- modo ---------- */
@@ -60,6 +61,18 @@ window.UI = (function () {
   function orderBadge(n) {
     return ADMIN ? `<span class="card__order">${pad(n)}</span>` : "";
   }
+  // estrela clicável (só admin, só link de topo): marca/desmarca o favorito.
+  function favStar(l) {
+    if (!ADMIN || l.parentId) return "";
+    const on = !!l.featured;
+    const lbl = on
+      ? `Remover destaque de ${escapeHtml(l.title)}`
+      : `Marcar ${escapeHtml(l.title)} como destaque`;
+    return (
+      `<button class="icon-btn icon-btn--star${on ? " is-active" : ""}" type="button" ` +
+      `data-action="fav" aria-pressed="${on}" aria-label="${lbl}">${ICONS.star}</button>`
+    );
+  }
   function adminActions(t) {
     if (!ADMIN) return "";
     return (
@@ -72,21 +85,23 @@ window.UI = (function () {
   function buildLinkCard(l) {
     const t = escapeHtml(l.title);
     const li = document.createElement("li");
-    li.className = "card";
+    li.className = "card" + (l.featured ? " card--featured" : "");
     li.dataset.id = l.id;
     li.innerHTML = `
       ${orderBadge(l.order)}
       <div class="card__body">
+        ${(l.featured && !ADMIN) ? `<span class="card__badge">${ICONS.star}<span>Em destaque</span></span>` : ""}
         <a class="card__link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener noreferrer">
           <span class="card__title">${t}</span>
         </a>
         ${l.subtitle ? `<span class="card__subtitle">${escapeHtml(l.subtitle)}</span>` : ""}
       </div>
       <div class="card__actions">
+        ${favStar(l)}
         <button class="icon-btn" type="button" data-action="qr" aria-label="Gerar QR code de ${t}">${ICONS.qr}</button>
         ${adminActions(t)}
       </div>
-      <span class="card__arrow" aria-hidden="true">${ICONS.arrow}</span>`;
+      ${ADMIN ? "" : `<span class="card__arrow" aria-hidden="true">${ICONS.arrow}</span>`}`;
     return li;
   }
 
@@ -176,6 +191,7 @@ window.UI = (function () {
     const item = Store.get(host.dataset.id);
     if (!item) return;
     if (action === "qr") openQR(item, btn);
+    else if (action === "fav") Store.setFeatured(item.id);
     else if (action === "edit" && adminStartEdit) adminStartEdit(item);
     else if (action === "remove" && adminRemoveItem) adminRemoveItem(item);
   });
