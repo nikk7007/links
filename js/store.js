@@ -37,6 +37,30 @@ window.Store = (function () {
     return links.find((l) => l.id === id) || null;
   }
 
+  // itens do mesmo grupo (mesmo parentId)
+  function siblings(parentId) {
+    return links.filter((l) => (l.parentId || null) === (parentId || null));
+  }
+
+  // renumera os irmãos sequencialmente (1..k) pela ordem atual
+  function reindex(parentId) {
+    siblings(parentId)
+      .sort((a, b) => a.order - b.order)
+      .forEach((l, i) => { l.order = i + 1; });
+  }
+
+  // coloca `activeId` na posição pedida e EMPURRA os demais (1 vira 2, etc.)
+  function placeAndReindex(activeId, parentId) {
+    siblings(parentId)
+      .sort((a, b) => {
+        if (a.order !== b.order) return a.order - b.order;
+        if (a.id === activeId) return -1; // em empate, o item ativo assume a posição
+        if (b.id === activeId) return 1;
+        return 0;
+      })
+      .forEach((l, i) => { l.order = i + 1; });
+  }
+
   // árvore (1 nível): itens de topo ordenados; pastas recebem `children`
   function getTree() {
     const sorted = getSorted();
@@ -55,18 +79,26 @@ window.Store = (function () {
 
   function seed(data) {
     links = (data || []).map(normalize);
+    // normaliza as ordens de cada grupo para 1..k
+    [...new Set(links.map((l) => l.parentId || null))].forEach(reindex);
     emit();
   }
 
   function add(data) {
-    links.push(normalize(data));
+    const item = normalize(data);
+    links.push(item);
+    placeAndReindex(item.id, item.parentId);
     emit();
   }
 
   function update(id, data) {
     const i = links.findIndex((l) => l.id === id);
     if (i === -1) return;
+    const oldParent = links[i].parentId || null;
     links[i] = normalize({ ...links[i], ...data, id });
+    const newParent = links[i].parentId || null;
+    placeAndReindex(id, newParent);
+    if (oldParent !== newParent) reindex(oldParent); // fecha o buraco no grupo antigo
     emit();
   }
 
