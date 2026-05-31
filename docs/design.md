@@ -30,7 +30,7 @@ Neutros + 1 accent. `:root` (claro) + `[data-theme="dark"]` (charcoal). Sem hex 
 
 **Claro (padrão):** `--bg #FBFAF8` (papel quente) · `--surface #FFFFFF` (card) · `--surface-2 #F4F2EE`
 (inputs) · bordas `--border rgba(24,22,18,.10)` / `--border-strong …18` · `--text #1B1A18` ·
-`--text-muted #76726B` · `--accent #4D7C2A` (verde musgo) · `--accent-weak` (10%) · `--danger #B42318` · `--success #0E7C5A`.
+`--text-muted #63605A` (AA com folga ~5.6:1) · `--accent #4D7C2A` (verde musgo) · `--accent-weak` (10%) · `--danger #B42318` · `--success #0E7C5A`.
 **Escuro:** `--bg #16181D` · `--surface #1D2026` · `--text #E9E8E5` · `--text-muted #9B9892` ·
 `--accent #8FBF52`. Contraste suave, sem brilho.
 **Forma/elevação:** `--radius 14px` / `--radius-sm 10px`; sombras leves `--shadow-1` (1px) e `--shadow-2` (8–10px difusa).

@@ -13,7 +13,7 @@
   --border-strong: rgba(24, 22, 18, .18);
 
   --text: #1B1A18;
-  --text-muted: #76726B;
+  --text-muted: #63605A;    /* secundário com folga de AA (~5.6–6.3:1), ainda nitidamente muted */
 
   --accent: #4D7C2A;        /* verde musgo (AA ~4.7:1 sobre claro) */
   --accent-weak: rgba(77, 124, 42, .10);
