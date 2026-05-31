@@ -83,7 +83,7 @@
 
 /* Young Serif tem x-height alto e "pesa" mais: tamanho reduzido vs. a serif antiga */
 .profile__name {
-  font-size: clamp(26px, 7vw, 38px);
+  font-size: clamp(1.625rem, 7vw, 2.375rem);
 }
 .profile__handle {
   font-size: var(--fs-sm);
