@@ -171,7 +171,8 @@
   box-shadow: var(--shadow-1);
   transition:
     border-color 200ms ease,
-    box-shadow 200ms ease;
+    box-shadow 200ms ease,
+    background-color 350ms ease;
   animation: riseIn 500ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 .folder.is-open {
