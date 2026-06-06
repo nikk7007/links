@@ -159,7 +159,6 @@ window.UI = (function () {
 
     tree.forEach((item, i) => {
       const li = item.kind === "folder" ? buildFolder(item) : buildLinkCard(item);
-      li.style.animationDelay = 80 + i * 60 + "ms";
       cardsEl.appendChild(li);
     });
 

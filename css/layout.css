@@ -11,7 +11,6 @@
   background:
     radial-gradient(115% 70% at 50% -15%, var(--wash), transparent 55%),
     var(--bg);
-  transition: background-color 350ms ease;
 }
 
 .container {
@@ -36,7 +35,6 @@
   align-items: flex-start;
   gap: var(--sp-2);
   padding-bottom: var(--sp-12);
-  animation: riseIn 550ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 .profile__top {
   display: flex;
@@ -59,13 +57,6 @@
   font-family: "Young Serif", serif;
   font-size: var(--fs-xl);
   font-weight: 400;
-  transition:
-    background-color 350ms ease,
-    color 350ms ease,
-    transform 250ms ease;
-}
-.avatar:hover {
-  transform: rotate(-4deg);
 }
 
 /* avatar com foto: sem borda + anel accent fino com respiro (parcimônia: 1 accent) */
@@ -112,18 +103,6 @@
   height: 8px;
   border-radius: 50%;
   background: var(--accent);
-  animation: dotPulse 2.4s ease-out infinite;
-}
-@keyframes dotPulse {
-  0% {
-    box-shadow: 0 0 0 0 var(--accent-weak);
-  }
-  70% {
-    box-shadow: 0 0 0 7px transparent;
-  }
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
 }
 
 /* rótulo de seção — discreto */
