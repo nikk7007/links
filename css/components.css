@@ -12,14 +12,30 @@
   height: 44px;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    transform 140ms var(--ease-out);
 }
 .icon-btn:hover {
   background: var(--surface-2);
   color: var(--text);
 }
+/* feedback de toque: o botão "afunda" de leve ao ser pressionado */
+.icon-btn:active {
+  transform: scale(0.9);
+}
 .icon-btn svg {
   width: 19px;
   height: 19px;
+}
+
+/* graça no toggle de tema: o ícone gira de leve no hover */
+.theme-toggle svg {
+  transition: transform 400ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.theme-toggle:hover svg {
+  transform: rotate(35deg);
 }
 
 /* theme toggle (mostra ícone conforme o tema) */
@@ -50,11 +66,23 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-1);
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    border-color 200ms ease,
+    background-color 350ms ease;
+  animation: riseIn 500ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 .card:hover,
 .card:focus-within {
+  transform: translateY(-2px);
   border-color: var(--border-strong);
   box-shadow: var(--shadow-2);
+}
+/* pressionar o card (link inteiro) o afunda de leve — confirma o toque */
+.card:active {
+  transform: scale(0.985);
+  transition-duration: 120ms;
 }
 
 .card__order {
@@ -63,6 +91,7 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+  transition: color 200ms ease;
 }
 .card:hover .card__order,
 .card:focus-within .card__order {
@@ -92,6 +121,7 @@
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 0% 1.5px;
+  transition: background-size 280ms ease;
 }
 .card:hover .card__title,
 .card:focus-within .card__title {
@@ -112,6 +142,9 @@
   flex: none;
   display: flex;
   color: var(--text-muted);
+  transition:
+    transform 200ms ease,
+    color 200ms ease;
 }
 .card__arrow svg {
   width: 18px;
@@ -120,6 +153,7 @@
 .card:hover .card__arrow,
 .card:focus-within .card__arrow {
   color: var(--accent);
+  transform: translateX(3px);
 }
 
 /* ações (acima do stretched link) — discretas */
@@ -181,6 +215,11 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-1);
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background-color 350ms ease;
+  animation: riseIn 500ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 .folder.is-open {
   border-color: var(--border-strong);
@@ -244,6 +283,9 @@
   flex: none;
   display: flex;
   color: var(--text-muted);
+  transition:
+    transform 220ms ease,
+    color 220ms ease;
 }
 .folder__chevron svg {
   width: 20px;
@@ -272,10 +314,11 @@
   background: transparent;
 }
 
-/* painel: abre/fecha instantâneo (grid 0fr -> 1fr, sem transição) */
+/* painel: expande suave sem saber a altura (grid 0fr -> 1fr) */
 .folder__panel {
   display: grid;
   grid-template-rows: 0fr;
+  transition: grid-template-rows 240ms ease;
 }
 .folder.is-open .folder__panel {
   grid-template-rows: 1fr;
@@ -310,6 +353,7 @@
   color: var(--accent);
   font-size: var(--fs-sm);
   border-bottom: 1px solid transparent;
+  transition: border-color 160ms ease;
 }
 .text-link:hover {
   border-color: var(--accent);
@@ -332,6 +376,9 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-1);
+  transition:
+    background-color 350ms ease,
+    border-color 350ms ease;
 }
 .form-panel__title {
   font-size: var(--fs-lg);
@@ -385,6 +432,10 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 350ms ease;
 }
 .input::placeholder {
   color: var(--text-muted);
@@ -437,6 +488,17 @@
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: var(--fs-sm);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    opacity 160ms ease,
+    transform 160ms var(--ease-out);
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
 }
 .btn:disabled {
   opacity: 0.55;
@@ -477,7 +539,27 @@
 .qr-modal::backdrop {
   background: rgba(16, 18, 22, 0.45);
 }
-/* [animation-test] modal aparece instantâneo (sem fade/slide) */
+.qr-modal[open] {
+  animation: modalIn 180ms var(--ease-out);
+}
+/* backdrop entra junto com um fade — entrada coesa (não some seco) */
+.qr-modal[open]::backdrop {
+  animation: backdropIn 180ms ease-out;
+}
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 .qr-modal__head {
   display: flex;

@@ -55,6 +55,7 @@ ul { list-style: none; padding: 0; }
   border-radius: var(--radius-sm);
   font-size: var(--fs-sm);
   font-weight: 600;
+  transition: top 150ms ease-out;
 }
 .skip-link:focus { top: 8px; }
 
@@ -64,7 +65,29 @@ ul { list-style: none; padding: 0; }
   clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
-/* [animation-test] base estática: sem entrada, sem fade de tema (canvas neutro) */
+/* entrada suave (usada por header e cards, com stagger) */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* troca de tema: fade suave em TODA a página, só durante a troca.
+   A classe .theme-anim é posta no <html> no clique e removida após o fade
+   (app.js) — assim não anima no load nem deixa os hovers lentos. */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-anim,
+  .theme-anim *,
+  .theme-anim *::before,
+  .theme-anim *::after {
+    transition:
+      background-color 350ms ease,
+      border-color 350ms ease,
+      color 350ms ease,
+      fill 350ms ease,
+      stroke 350ms ease,
+      box-shadow 350ms ease !important;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -44,6 +44,10 @@
 
   /* z-index */
   --z-bg: 0; --z-card-link: 1; --z-card-actions: 2; --z-header: 10; --z-modal: 100;
+
+  /* easing — curvas custom (as nativas são fracas); fonte: animations.dev */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);   /* entradas e feedback */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);  /* movimento na tela */
 }
 
 /* tema escuro — charcoal sereno (sem brilho, contraste suave) */
