@@ -583,6 +583,16 @@
 .qr-plate canvas,
 .qr-plate img {
   display: block;
+  border-radius: 6px; /* casa os cantos do QR com a placa */
+}
+
+/* dark: placa segue branca (escaneável), mas a moldura é suavizada — um
+   passe-partout em tom charcoal + sombra macia, pra não bater de chapa no fundo */
+[data-theme="dark"] .qr-plate {
+  border-color: transparent;
+  box-shadow:
+    0 0 0 6px var(--surface-2),
+    0 8px 22px rgba(0, 0, 0, 0.45);
 }
 
 .qr-modal__url {
