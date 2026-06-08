@@ -24,9 +24,10 @@
   --danger: #B42318;
   --success: #0E7C5A;
 
-  /* QR — placa sempre clara */
+  /* QR — temático (claro: tinta verde escura sobre placa branca) */
   --qr-plate: #FFFFFF;
-  --qr-ink: #16181D;
+  --qr-ink: #4D7C2A;
+  --qr-ink-2: #3A6320;
 
   /* forma / elevação (suave) */
   --radius: 14px;
@@ -72,4 +73,9 @@
 
   --shadow-1: 0 1px 2px rgba(0, 0, 0, .30);
   --shadow-2: 0 10px 28px rgba(0, 0, 0, .40);
+
+  /* QR — invertido p/ conversar com o charcoal (verde claro em placa escura) */
+  --qr-plate: #20242B;
+  --qr-ink: #8FBF52;
+  --qr-ink-2: #B6DC82;
 }
