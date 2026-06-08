@@ -46,7 +46,7 @@ function initBg(host) {
   const accent = () => new THREE.Color(cssColor("--accent", "#4D7C2A"));
 
   /* ---------- campo de estrelas (parado, bem discreto) ---------- */
-  const COUNT = mobile ? 110 : 220;
+  const COUNT = mobile ? 50 : 110;
   const spread = 26;
   const positions = new Float32Array(COUNT * 3);
   for (let i = 0; i < COUNT; i++) {
@@ -119,7 +119,12 @@ function initBg(host) {
     const line = new THREE.Line(streakGeo, mat);
     line.visible = false;
     scene.add(line);
-    meteors.push({ line, mat, active: false, nextAt: now() + Math.random() * 2 });
+    meteors.push({
+      line,
+      mat,
+      active: false,
+      nextAt: now() + Math.random() * 2,
+    });
   }
 
   function launch(m) {
@@ -237,19 +242,17 @@ function initBg(host) {
     attributeFilter: ["data-theme"],
   });
 
-  /* ---------- parallax suave (o .bg é pointer-events:none → ouvimos na window) ---------- */
-  let targetX = 0,
-    targetY = 0,
-    curX = 0,
-    curY = 0;
+  /* ---------- mouse → mundo (só alimenta os cometas; o fundo não reage) ----------
+     O .bg é pointer-events:none, então ouvimos na window. A câmera fica
+     parada: o campo de estrelas não tem mais parallax. */
   if (!reduce) {
     window.addEventListener(
       "pointermove",
       (e) => {
-        targetX = e.clientX / window.innerWidth - 0.5;
-        targetY = e.clientY / window.innerHeight - 0.5;
-        mouse.x = targetX * 2 * halfW; // pointer → coordenadas de mundo (z=0)
-        mouse.y = -targetY * 2 * halfH;
+        const nx = e.clientX / window.innerWidth - 0.5;
+        const ny = e.clientY / window.innerHeight - 0.5;
+        mouse.x = nx * 2 * halfW; // pointer → coordenadas de mundo (z=0)
+        mouse.y = -ny * 2 * halfH;
       },
       { passive: true },
     );
@@ -262,11 +265,6 @@ function initBg(host) {
     stars.rotation.y = t * 0.02; // deriva quase imperceptível
     meteors.forEach((m) => updateMeteor(m, dt));
     updateFollowers(t);
-    curX += (targetX - curX) * 0.03;
-    curY += (targetY - curY) * 0.03;
-    camera.position.x = curX * 2.2;
-    camera.position.y = -curY * 1.6;
-    camera.lookAt(scene.position);
     renderer.render(scene, camera);
   }
 
