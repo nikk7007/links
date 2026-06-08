@@ -32,7 +32,7 @@ links/
 │   ├── qr.js              # wrapper para gerar QR via lib offline
 │   └── app.js             # ponto de entrada: theme toggle + liga store↔ui
 ├── vendor/
-│   └── qrcode.min.js      # biblioteca de QR offline (vendorizada localmente)
+│   └── qr-code-styling.js # biblioteca de QR estilizado offline (vendorizada localmente)
 └── docs/
     ├── plano.md           # esta documentação
     └── design.md          # design system (visual)
@@ -47,7 +47,7 @@ As páginas usam os **mesmos** CSS/JS (o admin referencia com `../`).
 > (seed do `mock.js`) — proteção de acesso e persistência ficam para a infra depois.
 
 Ordem dos assets: CSS `tokens → base → layout → components`; JS no fim do `<body>`
-`vendor/qrcode.min.js → mock.js → store.js → qr.js → ui.js → app.js`.
+`vendor/qr-code-styling.js → mock.js → store.js → qr.js → ui.js → app.js`.
 
 ## Modelo de dados (`js/mock.js` / `js/store.js`)
 Array de itens (links e pastas):
@@ -104,8 +104,8 @@ Array de itens (links e pastas):
 - Tema neutro padrão (claro/sóbrio) até o visual ser definido.
 
 ## Biblioteca de QR (offline)
-- Vendorizar `qrcode.min.js` localmente em `vendor/` (ex.: davidshimjs/qrcodejs ou
-  soldair/node-qrcode build browser). Sem chamadas a serviços externos em runtime.
+- Vendorizar `qr-code-styling.js` localmente em `vendor/` (kozakdenys/qr-code-styling,
+  build UMD → global `QRCodeStyling`). Sem chamadas a serviços externos em runtime.
 
 ## Verificação (end-to-end)
 1. Abrir `index.html` no navegador (duplo clique ou `Start-Process .\index.html`).
