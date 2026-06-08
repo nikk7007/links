@@ -160,6 +160,57 @@ function initBg(host) {
     m.mat.uniforms.uOpacity.value = Math.sin(p * Math.PI) * 0.9;
   }
 
+  /* ---------- cometas que seguem o mouse ----------
+     3 seguidores: cada um persegue a posição do mouse de `delay` segundos
+     atrás (lida de um histórico) e se aproxima dela na sua própria `ease`
+     (velocidade). A cauda aponta no sentido contrário ao movimento e estica
+     com a velocidade, então vira um cometinha quando o mouse se mexe e some
+     num pontinho quando ele para. Desligados em prefers-reduced-motion. */
+  let halfW = 10,
+    halfH = 8; // metade do plano visível em z=0 (preenchido no resize)
+  const FOLLOWERS = reduce
+    ? []
+    : [
+        { delay: 0.05, ease: 0.18 }, // rápido e grudado
+        { delay: 0.18, ease: 0.1 }, // intermediário
+        { delay: 0.35, ease: 0.06 }, // lento e arrastado
+      ].map((cfg) => {
+        const mat = makeMeteorMaterial();
+        mat.uniforms.uOpacity.value = 0.85;
+        const line = new THREE.Line(streakGeo, mat);
+        line.visible = false;
+        scene.add(line);
+        return { ...cfg, line, mat, x: 0, y: 0, px: 0, py: 0 };
+      });
+
+  const mouse = { x: 0, y: 0 };
+  const history = []; // { t, x, y } amostrado por frame
+  function mouseSampleAt(time) {
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (history[i].t <= time) return history[i];
+    }
+    return history[0] || mouse;
+  }
+  function updateFollowers(t) {
+    if (!FOLLOWERS.length) return;
+    history.push({ t, x: mouse.x, y: mouse.y });
+    while (history.length && history[0].t < t - 1) history.shift();
+    for (const f of FOLLOWERS) {
+      const tgt = mouseSampleAt(t - f.delay);
+      f.px = f.x;
+      f.py = f.y;
+      f.x += (tgt.x - f.x) * f.ease;
+      f.y += (tgt.y - f.y) * f.ease;
+      const vx = f.x - f.px,
+        vy = f.y - f.py;
+      const speed = Math.hypot(vx, vy);
+      f.line.visible = true;
+      f.line.position.set(f.x, f.y, 0);
+      if (speed > 0.0008) f.line.rotation.z = Math.atan2(vy, vx);
+      f.line.scale.x = Math.min(0.6 + speed * 14, 6);
+    }
+  }
+
   /* ---------- resize ---------- */
   function resize() {
     const w = host.clientWidth || window.innerWidth;
@@ -167,6 +218,8 @@ function initBg(host) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    halfH = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
+    halfW = halfH * camera.aspect;
   }
   resize();
   window.addEventListener("resize", resize);
@@ -176,6 +229,7 @@ function initBg(host) {
     const c = accent();
     starMat.color.copy(c);
     meteors.forEach((m) => m.mat.uniforms.uColor.value.copy(c));
+    FOLLOWERS.forEach((f) => f.mat.uniforms.uColor.value.copy(c));
   });
   obs.observe(document.documentElement, {
     attributes: true,
@@ -193,6 +247,8 @@ function initBg(host) {
       (e) => {
         targetX = e.clientX / window.innerWidth - 0.5;
         targetY = e.clientY / window.innerHeight - 0.5;
+        mouse.x = targetX * 2 * halfW; // pointer → coordenadas de mundo (z=0)
+        mouse.y = -targetY * 2 * halfH;
       },
       { passive: true },
     );
@@ -204,6 +260,7 @@ function initBg(host) {
     const t = clock.getElapsedTime();
     stars.rotation.y = t * 0.02; // deriva quase imperceptível
     meteors.forEach((m) => updateMeteor(m, dt));
+    updateFollowers(t);
     curX += (targetX - curX) * 0.03;
     curY += (targetY - curY) * 0.03;
     camera.position.x = curX * 2.2;
