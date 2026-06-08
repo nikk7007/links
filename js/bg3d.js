@@ -39,8 +39,8 @@ function initBg(host) {
   const canvas = renderer.domElement;
   canvas.style.position = "absolute";
   canvas.style.inset = "0";
-  canvas.style.width = "150%";
-  canvas.style.height = "150%";
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
   host.appendChild(canvas);
 
   const accent = () => new THREE.Color(cssColor("--accent", "#4D7C2A"));
@@ -133,8 +133,22 @@ function initBg(host) {
     const speed = 22 + Math.random() * 16;
     m.vx = Math.cos(angle) * speed;
     m.vy = Math.sin(angle) * speed;
-    m.x = -spread * 0.55 + (Math.random() - 0.5) * spread * 0.5; // entra pela esquerda/topo
-    m.y = spread * 0.42 + Math.random() * spread * 0.2;
+    // nasce uniformemente ao longo da borda de cima + borda esquerda (um "L"):
+    // é por onde uma chuva diagonal ↘ entra na tela, então fica bem espalhada.
+    const topY = spread * 0.5;
+    const leftX = -spread * 0.6;
+    const rightEnd = spread * 0.5;
+    const bottomEnd = -spread * 0.25;
+    const topLen = rightEnd - leftX; // comprimento da borda de cima
+    const leftLen = topY - bottomEnd; // comprimento da borda esquerda
+    const r = Math.random() * (topLen + leftLen);
+    if (r < topLen) {
+      m.x = leftX + r; // sorteado na borda de cima
+      m.y = topY;
+    } else {
+      m.x = leftX; // sorteado na borda esquerda
+      m.y = topY - (r - topLen);
+    }
     m.z = (Math.random() - 0.5) * 6;
     m.len = 2.6 + Math.random() * 3.2;
     m.age = 0;
