@@ -204,10 +204,11 @@ function initBg(host) {
       const vx = f.x - f.px,
         vy = f.y - f.py;
       const speed = Math.hypot(vx, vy);
-      f.line.visible = true;
       f.line.position.set(f.x, f.y, 0);
       if (speed > 0.0008) f.line.rotation.z = Math.atan2(vy, vx);
-      f.line.scale.x = Math.min(0.6 + speed * 14, 6);
+      // parado = sem cauda (escala 0 → some); com teto menor que antes
+      f.line.scale.x = Math.min(speed * 16, 3.2);
+      f.line.visible = f.line.scale.x > 0.01;
     }
   }
 
