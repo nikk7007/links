@@ -35,7 +35,7 @@ window.MOCK_LINKS = [
     title: "LinkedIn",
     parentId: "f-social",
     subtitle: "experiência e network",
-    url: "www.linkedin.com/in/nikolas-santos-184657398",
+    url: "https://www.linkedin.com/in/nikolas-santos-184657398",
     order: 1,
   },
   {
