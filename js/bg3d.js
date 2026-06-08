@@ -111,7 +111,7 @@ function initBg(host) {
     });
   }
 
-  const POOL = mobile ? 3 : 5;
+  const POOL = mobile ? 7 : 14;
   const meteors = [];
   const now = () => performance.now() / 1000;
   for (let i = 0; i < POOL; i++) {
@@ -119,18 +119,17 @@ function initBg(host) {
     const line = new THREE.Line(streakGeo, mat);
     line.visible = false;
     scene.add(line);
-    meteors.push({ line, mat, active: false, nextAt: now() + Math.random() * 4 });
+    meteors.push({ line, mat, active: false, nextAt: now() + Math.random() * 2 });
   }
 
   function launch(m) {
-    // nasce no topo, cruza na diagonal para baixo (esq. ou dir.)
-    const dir = Math.random() < 0.5 ? -1 : 1; // -1 = cai p/ esquerda
-    const angle = (-Math.PI / 2) * (1 - 0.45 * dir) - 0.1 * dir; // diagonal íngreme
+    // sempre do topo-esquerda para o chão-direita (diagonal ↘)
+    const angle = -Math.PI / 4 + (Math.random() - 0.5) * 0.18; // ~ -45° com leve variação
     const speed = 22 + Math.random() * 16;
     m.vx = Math.cos(angle) * speed;
     m.vy = Math.sin(angle) * speed;
-    m.x = (Math.random() - 0.5) * spread - dir * 6; // entra deslocado p/ atravessar
-    m.y = spread * 0.42;
+    m.x = -spread * 0.55 + (Math.random() - 0.5) * spread * 0.5; // entra pela esquerda/topo
+    m.y = spread * 0.42 + Math.random() * spread * 0.2;
     m.z = (Math.random() - 0.5) * 6;
     m.len = 2.6 + Math.random() * 3.2;
     m.age = 0;
@@ -152,7 +151,7 @@ function initBg(host) {
       m.active = false;
       m.line.visible = false;
       m.mat.uniforms.uOpacity.value = 0;
-      m.nextAt = now() + 0.8 + Math.random() * 3.5; // intervalo até a próxima
+      m.nextAt = now() + 0.15 + Math.random() * 1.1; // intervalo até a próxima
       return;
     }
     m.x += m.vx * dt;
