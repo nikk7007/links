@@ -1,67 +1,85 @@
-/* mock.js — dados seed (substituídos por persistência real depois).
-   Modelo: { id, kind:"link"|"folder", parentId, title, subtitle?, url, order, featured? }
-   - featured (link de topo): marca "comece por aqui" — wash accent + selo na vitrine.
-   - kind "folder": pasta (sem url; sempre no topo). Links com parentId = id da pasta ficam dentro.
-   - kind "link" (padrão): link normal; parentId null = topo. */
+/* mock.js — dados dos links. GERADO pelo painel admin (Publicar);
+   editar de preferência por lá. Modelo:
+   { id, kind:"link"|"folder", parentId, title, subtitle?, url, order, featured? } */
 window.MOCK_LINKS = [
-  // links soltos no topo
-
-  // pasta "Social" + links filhos
   {
-    id: "f-proj",
-    kind: "folder",
-    title: "Projetos",
-    subtitle: "Projetos pessoais",
-    order: 1,
+    "id": "em",
+    "kind": "link",
+    "parentId": "f-contato",
+    "title": "Email",
+    "subtitle": "fale comigo",
+    "url": "mailto:nik700789@gmail.com",
+    "order": 1,
+    "featured": false
   },
   {
-    id: "spin",
-    title: "Spin",
-    parentId: "f-proj",
-    subtitle: "Veja sua sorte",
-    url: "https://nikk7007.github.io/portal/public/spin",
-    order: 1,
-  },
-
-  {
-    id: "f-social",
-    kind: "folder",
-    title: "Redes sociais",
-    subtitle: "me acompanhe por aí",
-    order: 2,
+    "id": "li",
+    "kind": "link",
+    "parentId": "f-social",
+    "title": "LinkedIn",
+    "subtitle": "experiência e network",
+    "url": "https://www.linkedin.com/in/nikolas-santos-184657398",
+    "order": 1,
+    "featured": false
   },
   {
-    id: "li",
-    title: "LinkedIn",
-    parentId: "f-social",
-    subtitle: "experiência e network",
-    url: "https://www.linkedin.com/in/nikolas-santos-184657398",
-    order: 1,
+    "id": "f-proj",
+    "kind": "folder",
+    "parentId": null,
+    "title": "Projetos",
+    "subtitle": "Projetos pessoais",
+    "url": "",
+    "order": 1,
+    "featured": false
   },
   {
-    id: "gh",
-    title: "GitHub",
-    parentId: "f-social",
-    subtitle: "meus repositórios e projetos",
-    url: "https://github.com/nikk7007",
-    order: 2,
+    "id": "spin",
+    "kind": "link",
+    "parentId": "f-proj",
+    "title": "Spin",
+    "subtitle": "Veja sua sorte",
+    "url": "https://nikk7007.github.io/portal/public/spin",
+    "order": 1,
+    "featured": false
   },
   {
-    id: "ig",
-    title: "Instagram",
-    parentId: "f-social",
-    url: "https://www.instagram.com/nik.nls/",
-    order: 3,
+    "id": "gh",
+    "kind": "link",
+    "parentId": "f-social",
+    "title": "GitHub",
+    "subtitle": "meus repositórios e projetos",
+    "url": "https://github.com/nikk7007",
+    "order": 2,
+    "featured": false
   },
-
-  // pasta "Contato" + links filhos
-  { id: "f-contato", kind: "folder", title: "Contato", order: 4 },
   {
-    id: "em",
-    title: "Email",
-    parentId: "f-contato",
-    subtitle: "fale comigo",
-    url: "mailto:nik700789@gmail.com",
-    order: 1,
+    "id": "f-social",
+    "kind": "folder",
+    "parentId": null,
+    "title": "Redes sociais",
+    "subtitle": "",
+    "url": "",
+    "order": 2,
+    "featured": false
   },
+  {
+    "id": "f-contato",
+    "kind": "folder",
+    "parentId": null,
+    "title": "Contato",
+    "subtitle": "",
+    "url": "",
+    "order": 3,
+    "featured": false
+  },
+  {
+    "id": "ig",
+    "kind": "link",
+    "parentId": "f-social",
+    "title": "Instagram",
+    "subtitle": "",
+    "url": "https://www.instagram.com/nik.nls/",
+    "order": 3,
+    "featured": false
+  }
 ];
