@@ -8,6 +8,19 @@ window.Store = (function () {
     return "l_" + Math.random().toString(36).slice(2, 9);
   }
 
+  // mesma whitelist do form do admin; o seed não passa pelo form, então o
+  // store também barra protocolos perigosos (ex.: javascript:)
+  function safeUrl(v) {
+    const s = String(v || "").trim();
+    if (!s) return "";
+    try {
+      const u = new URL(s);
+      return ["http:", "https:", "mailto:", "tel:"].includes(u.protocol) ? s : "";
+    } catch (_) {
+      return "";
+    }
+  }
+
   function normalize(l) {
     const kind = l.kind === "folder" ? "folder" : "link";
     return {
@@ -17,7 +30,7 @@ window.Store = (function () {
       parentId: kind === "folder" ? null : (l.parentId || null),
       title: (l.title || "").trim(),
       subtitle: (l.subtitle || "").trim(),
-      url: kind === "folder" ? "" : (l.url || "").trim(),
+      url: kind === "folder" ? "" : safeUrl(l.url),
       order: Number.isFinite(Number(l.order)) ? Number(l.order) : 0,
       // destaque só faz sentido para link de topo ("comece por aqui")
       featured: kind === "link" && !l.parentId && !!l.featured,

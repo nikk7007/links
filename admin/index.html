@@ -6,6 +6,7 @@
   <title>Admin — Meus links</title>
   <meta name="robots" content="noindex" />
   <meta name="color-scheme" content="dark light" />
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
 
   <!-- tema inicial: localStorage > preferência do sistema (evita flash) -->
   <script>
@@ -130,12 +131,14 @@
     </div>
   </dialog>
 
-  <!-- scripts: vendor -> mock -> store -> qr -> ui -> app -->
+  <!-- scripts: vendor -> mock -> store -> qr -> ui -> admin -> app
+       (admin.js registra os handlers do formulário ANTES do seed em app.js) -->
   <script src="../vendor/qr-code-styling.js"></script>
   <script src="../js/mock.js"></script>
   <script src="../js/store.js"></script>
   <script src="../js/qr.js"></script>
   <script src="../js/ui.js"></script>
+  <script src="../js/admin.js"></script>
   <script src="../js/app.js"></script>
 </body>
 </html>

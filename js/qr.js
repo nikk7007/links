@@ -8,6 +8,13 @@
 window.QR = (function () {
   const SIZE = 240;
 
+  // o canvas não espera webfont: sem isso, o primeiro monograma sai em Georgia.
+  // Pré-carrega a Young Serif no peso/tamanho usados pelo makeLogo.
+  const fontReady =
+    document.fonts && document.fonts.load
+      ? document.fonts.load('700 72px "Young Serif"').catch(() => {})
+      : Promise.resolve();
+
   function tok(name, fallback) {
     const v = getComputedStyle(document.documentElement)
       .getPropertyValue(name)
@@ -74,10 +81,15 @@ window.QR = (function () {
 
   function render(container, text) {
     container.innerHTML = "";
-    const qr = new QRCodeStyling(options(text, palette()));
-    qr.append(container);
-    container.__qr = qr; // guardado p/ o download reaproveitar a instância
-    return qr;
+    container.__qr = null;
+    // token invalida renders pendentes se o modal reabrir com outro link
+    const token = (container.__token = (container.__token || 0) + 1);
+    fontReady.then(() => {
+      if (container.__token !== token) return;
+      const qr = new QRCodeStyling(options(text, palette()));
+      qr.append(container);
+      container.__qr = qr; // guardado p/ o download reaproveitar a instância
+    });
   }
 
   function download(container, filename) {

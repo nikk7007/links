@@ -28,11 +28,13 @@ links/
 ├── js/                    # compartilhado pelas duas páginas
 │   ├── mock.js            # dados seed dos cards (array de objetos)
 │   ├── store.js           # estado em memória + operações (add/edit/remove/sort)
-│   ├── ui.js              # render dos cards + modal QR; form só quando há #card-form (admin)
+│   ├── ui.js              # render dos cards + modal QR (comum às duas páginas)
+│   ├── admin.js           # formulário do painel (carregado só pelo admin)
 │   ├── qr.js              # wrapper para gerar QR via lib offline
 │   └── app.js             # ponto de entrada: theme toggle + liga store↔ui
 ├── vendor/
-│   └── qr-code-styling.js # biblioteca de QR estilizado offline (vendorizada localmente)
+│   ├── qr-code-styling.js # biblioteca de QR estilizado offline (vendorizada localmente)
+│   └── three.module.js    # Three.js (fundo 3D) vendorizado — sem CDN em runtime
 └── docs/
     ├── plano.md           # esta documentação
     └── design.md          # design system (visual)
@@ -41,13 +43,16 @@ links/
 **Modos:** o `ui.js` detecta o modo pela presença do formulário (`#card-form`). A view pública
 (`index.html`) não tem formulário → cards renderizam só o botão de QR (sem editar/remover). O admin
 (`admin/index.html`) tem o formulário → cards ganham editar/remover e o painel de add/editar.
-As páginas usam os **mesmos** CSS/JS (o admin referencia com `../`).
+A lógica do formulário vive em `js/admin.js` (carregado só pelo admin), que registra seus
+handlers via `UI.registerAdmin` — a página pública não baixa esse código.
+As páginas usam os **mesmos** CSS/JS comuns (o admin referencia com `../`).
 
 > Separação **estrutural** apenas. O admin ainda não tem autenticação e os dados são em memória
 > (seed do `mock.js`) — proteção de acesso e persistência ficam para a infra depois.
 
 Ordem dos assets: CSS `tokens → base → layout → components`; JS no fim do `<body>`
-`vendor/qr-code-styling.js → mock.js → store.js → qr.js → ui.js → app.js`.
+`vendor/qr-code-styling.js → mock.js → store.js → qr.js → ui.js → (admin.js, só no admin) → app.js`
+(o `admin.js` precisa vir antes do `app.js`, que dispara o seed/primeiro render).
 
 ## Modelo de dados (`js/mock.js` / `js/store.js`)
 Array de itens (links e pastas):

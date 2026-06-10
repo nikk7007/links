@@ -15,7 +15,7 @@ window.MOCK_LINKS = [
     order: 1,
   },
   {
-    id: "li",
+    id: "spin",
     title: "Spin",
     parentId: "f-proj",
     subtitle: "Veja sua sorte",

@@ -1,6 +1,6 @@
 /* app.js — ponto de entrada: liga theme toggle, conecta Store -> UI e injeta o seed. */
 (function () {
-  /* theme toggle (escuro = padrão; persiste a escolha em localStorage) */
+  /* theme toggle (padrão = preferência do sistema; persiste a escolha em localStorage) */
   const toggle = document.getElementById("theme-toggle");
   if (toggle) {
     let themeTimer;

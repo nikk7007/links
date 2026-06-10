@@ -1,4 +1,4 @@
-/* bg3d.js — fundo 3D ambiente (Three.js via CDN).
+/* bg3d.js — fundo 3D ambiente (Three.js vendorizado em vendor/three.module.js).
    Estrelas cadentes na cor accent riscando o fundo, sobre um campo de
    estrelas bem sutil parado por trás. Decorativo: o .bg é pointer-events:none
    e aria-hidden, então nada disso interfere na leitura ou na interação.

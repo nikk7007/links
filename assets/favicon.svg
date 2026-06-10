@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- monograma "N" — mesmo selo do QR (disco verde musgo + letra clara) -->
+  <circle cx="32" cy="32" r="32" fill="#4D7C2A"/>
+  <text x="32" y="34" font-family="Georgia, 'Times New Roman', serif" font-weight="700"
+        font-size="38" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">N</text>
+</svg>

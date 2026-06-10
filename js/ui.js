@@ -1,9 +1,11 @@
-/* ui.js — render de cards/pastas + modal QR (comum) e formulário (só admin).
+/* ui.js — render de cards/pastas + modal QR (comum às duas páginas).
    Modo detectado pela presença de #card-form:
-     - admin  → QR/editar/remover nos cards + formulário (link ou pasta)
+     - admin  → QR/editar/remover nos cards (handlers registrados por admin.js)
      - público (read-only) → cards só com QR; pastas expansíveis (accordion)
    Pastas: 1 nível, topo misto, accordion (só uma aberta por vez, começam fechadas).
-   Expõe window.UI.renderCards (assinado pelo Store em app.js). */
+   O formulário do painel vive em js/admin.js (carregado só pelo admin), que se
+   conecta aqui via UI.registerAdmin. Expõe window.UI.renderCards (assinado pelo
+   Store em app.js). */
 window.UI = (function () {
   /* ---------- ícones (Lucide, SVG inline — sem emoji) ---------- */
   const A =
@@ -16,13 +18,11 @@ window.UI = (function () {
     arrow: `<svg ${A}><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
     chevronDown: `<svg ${A}><path d="m6 9 6 6 6-6"/></svg>`,
     folder: `<svg ${A}><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>`,
-    alert: `<svg ${A}><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>`,
     star: `<svg ${A}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
   };
 
   /* ---------- modo ---------- */
-  const form = document.getElementById("card-form");
-  const ADMIN = !!form;
+  const ADMIN = !!document.getElementById("card-form");
 
   /* ---------- elementos comuns ---------- */
   const cardsEl = document.getElementById("cards");
@@ -35,10 +35,11 @@ window.UI = (function () {
   let qrTrigger = null;
   let qrFilename = "qrcode.png";
 
-  // handlers de admin (definidos no bloco ADMIN; null no modo público)
-  let adminStartEdit = null;
-  let adminRemoveItem = null;
-  let adminOnRender = null;
+  // handlers de admin (registrados por admin.js via registerAdmin; vazios no público)
+  const admin = { startEdit: null, removeItem: null, onRender: null };
+  function registerAdmin(handlers) {
+    Object.assign(admin, handlers);
+  }
 
   // accordion: id da pasta aberta (persiste entre re-renders)
   let openFolderId = null;
@@ -152,6 +153,7 @@ window.UI = (function () {
   }
 
   /* ---------- render principal ---------- */
+  let firstRender = true;
   function renderCards() {
     const tree = Store.getTree();
     cardsEl.innerHTML = "";
@@ -159,11 +161,15 @@ window.UI = (function () {
 
     tree.forEach((item, i) => {
       const li = item.kind === "folder" ? buildFolder(item) : buildLinkCard(item);
-      li.style.animationDelay = 80 + i * 60 + "ms";
+      // entrada com stagger só na primeira pintura; nos re-renders (add/edit/
+      // remove no admin) a lista não "renasce" — aparece já no lugar
+      if (firstRender) li.style.animationDelay = 80 + i * 60 + "ms";
+      else li.style.animation = "none";
       cardsEl.appendChild(li);
     });
+    firstRender = false;
 
-    if (adminOnRender) adminOnRender();
+    if (admin.onRender) admin.onRender();
   }
 
   /* ---------- accordion ---------- */
@@ -194,8 +200,8 @@ window.UI = (function () {
     if (!item) return;
     if (action === "qr") openQR(item, btn);
     else if (action === "fav") Store.setFeatured(item.id);
-    else if (action === "edit" && adminStartEdit) adminStartEdit(item);
-    else if (action === "remove" && adminRemoveItem) adminRemoveItem(item);
+    else if (action === "edit" && admin.startEdit) admin.startEdit(item);
+    else if (action === "remove" && admin.removeItem) admin.removeItem(item);
   });
 
   /* ---------- modal QR (comum) ---------- */
@@ -221,189 +227,5 @@ window.UI = (function () {
   document.getElementById("qr-close-2").addEventListener("click", closeQR);
   document.getElementById("qr-download").addEventListener("click", () => QR.download(qrCanvas, qrFilename));
 
-  /* ---------- formulário (somente admin) ---------- */
-  if (ADMIN) {
-    const formTitle = document.getElementById("form-title");
-    const submitBtn = document.getElementById("submit-btn");
-    const cancelBtn = document.getElementById("cancel-btn");
-    const kindChk = document.getElementById("f-kind");
-    const parentSel = document.getElementById("f-parent");
-    const fieldUrl = document.getElementById("field-url");
-    const fieldParent = document.getElementById("field-parent");
-    const fields = {
-      title: document.getElementById("f-title"),
-      subtitle: document.getElementById("f-subtitle"),
-      url: document.getElementById("f-url"),
-      order: document.getElementById("f-order"),
-    };
-    const errors = {
-      title: document.getElementById("e-title"),
-      url: document.getElementById("e-url"),
-      order: document.getElementById("e-order"),
-    };
-    let editingId = null;
-
-    function isFolder() { return kindChk.checked; }
-
-    // progressive disclosure: URL/pasta-pai só fazem sentido para link
-    function applyKindVisibility() {
-      const folder = isFolder();
-      fieldUrl.hidden = folder;
-      fieldParent.hidden = folder;
-      if (folder) setError("url", "");
-    }
-
-    // repovoa o <select> de pasta pai com as pastas existentes (preserva seleção válida)
-    function refreshParentOptions() {
-      const folders = Store.getSorted().filter((l) => l.kind === "folder" && l.id !== editingId);
-      const current = parentSel.value;
-      parentSel.innerHTML =
-        '<option value="">— nenhuma (topo) —</option>' +
-        folders.map((f) => `<option value="${f.id}">${escapeHtml(f.title)}</option>`).join("");
-      if (folders.some((f) => f.id === current)) parentSel.value = current;
-    }
-
-    function setError(name, msg) {
-      const inp = fields[name];
-      const err = errors[name];
-      if (msg) {
-        inp.setAttribute("aria-invalid", "true");
-        err.innerHTML = `${ICONS.alert}<span>${escapeHtml(msg)}</span>`;
-        err.classList.add("is-visible");
-      } else {
-        inp.removeAttribute("aria-invalid");
-        err.classList.remove("is-visible");
-        err.textContent = "";
-      }
-    }
-    function validateTitle() {
-      if (!fields.title.value.trim()) { setError("title", "Informe um título."); return false; }
-      setError("title", ""); return true;
-    }
-    function validateUrl() {
-      if (isFolder()) { setError("url", ""); return true; } // pasta não tem URL
-      const v = fields.url.value.trim();
-      if (!v) { setError("url", "Informe a URL do link."); return false; }
-      let u;
-      try { u = new URL(v); } catch (_) {
-        setError("url", "URL inválida. Use o formato https://exemplo.com");
-        return false;
-      }
-      if (!["http:", "https:", "mailto:", "tel:"].includes(u.protocol)) {
-        setError("url", "Use http://, https://, mailto: ou tel:");
-        return false;
-      }
-      setError("url", ""); return true;
-    }
-    function validateOrder() {
-      const v = fields.order.value.trim();
-      if (v === "") { setError("order", ""); return true; } // vazio = ordem automática
-      if (!Number.isFinite(Number(v))) { setError("order", "A ordem deve ser um número."); return false; }
-      setError("order", ""); return true;
-    }
-
-    kindChk.addEventListener("change", applyKindVisibility);
-    fields.title.addEventListener("blur", validateTitle);
-    fields.url.addEventListener("blur", validateUrl);
-    fields.order.addEventListener("blur", validateOrder);
-    ["title", "url", "order"].forEach((n) =>
-      fields[n].addEventListener("input", () => {
-        if (fields[n].getAttribute("aria-invalid")) setError(n, "");
-      })
-    );
-
-    // próxima ordem entre os IRMÃOS (mesmo parentId)
-    function nextOrder(parentId) {
-      const sibs = Store.getSorted().filter((l) => (l.parentId || null) === (parentId || null));
-      return sibs.length ? Math.max(...sibs.map((l) => l.order)) + 1 : 1;
-    }
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const valid = [validateTitle(), validateUrl(), validateOrder()].every(Boolean);
-      if (!valid) {
-        const firstBad = ["title", "url", "order"].find((n) => fields[n].getAttribute("aria-invalid"));
-        if (firstBad) fields[firstBad].focus();
-        return;
-      }
-      const folder = isFolder();
-      const parentId = folder ? null : (parentSel.value || null);
-      const data = {
-        kind: folder ? "folder" : "link",
-        parentId: parentId,
-        title: fields.title.value.trim(),
-        subtitle: fields.subtitle.value.trim(),
-        url: folder ? "" : fields.url.value.trim(),
-        order: fields.order.value.trim() === "" ? nextOrder(parentId) : Number(fields.order.value),
-      };
-      if (editingId) Store.update(editingId, data);
-      else Store.add(data);
-      resetForm();
-      flashSuccess();
-    });
-
-    function startEdit(item) {
-      editingId = item.id;
-      kindChk.checked = item.kind === "folder";
-      applyKindVisibility();
-      refreshParentOptions();
-      parentSel.value = item.parentId || "";
-      fields.title.value = item.title;
-      fields.subtitle.value = item.subtitle || "";
-      fields.url.value = item.url || "";
-      fields.order.value = item.order;
-      formTitle.textContent = item.kind === "folder" ? "Editar pasta" : "Editar link";
-      submitBtn.textContent = "Salvar";
-      cancelBtn.hidden = false;
-      ["title", "url", "order"].forEach((n) => setError(n, ""));
-      document.querySelector(".form-panel").scrollIntoView({ behavior: "smooth", block: "start" });
-      fields.title.focus();
-    }
-    function resetForm() {
-      editingId = null;
-      form.reset();
-      kindChk.checked = false;
-      applyKindVisibility();
-      refreshParentOptions();
-      formTitle.textContent = "Adicionar";
-      submitBtn.textContent = "Adicionar";
-      cancelBtn.hidden = true;
-      ["title", "url", "order"].forEach((n) => setError(n, ""));
-    }
-    cancelBtn.addEventListener("click", resetForm);
-
-    function removeItem(item) {
-      let msg = `Remover o link “${item.title}”?`;
-      if (item.kind === "folder") {
-        const n = Store.childrenOf(item.id).length;
-        msg = n
-          ? `Remover a pasta “${item.title}” e os ${n} link(s) dentro dela?`
-          : `Remover a pasta “${item.title}”?`;
-      }
-      if (!confirm(msg)) return;
-      if (editingId === item.id) resetForm();
-      Store.remove(item.id);
-    }
-
-    function flashSuccess() {
-      submitBtn.classList.add("is-success");
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Salvo!";
-      setTimeout(() => {
-        submitBtn.classList.remove("is-success");
-        submitBtn.disabled = false;
-        submitBtn.textContent = editingId ? "Salvar" : "Adicionar";
-      }, 1100);
-    }
-
-    // estado inicial dos campos condicionais
-    applyKindVisibility();
-
-    // expõe para o escopo externo
-    adminStartEdit = startEdit;
-    adminRemoveItem = removeItem;
-    adminOnRender = refreshParentOptions;
-  }
-
-  return { renderCards };
+  return { renderCards, registerAdmin, escapeHtml };
 })();

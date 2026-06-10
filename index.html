@@ -6,6 +6,19 @@
   <title>Nikolas Leme Santos · links</title>
   <meta name="description" content="Meu linktree pessoal — todos os meus links em um só lugar." />
   <meta name="color-scheme" content="dark light" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+  <!-- preview ao compartilhar (WhatsApp/redes). URLs absolutas: ajustar se o
+       deploy sair do GitHub Pages (nikk7007.github.io/links) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Nikolas Leme Santos · links" />
+  <meta property="og:description" content="Todos os meus links em um só lugar." />
+  <meta property="og:url" content="https://nikk7007.github.io/links/" />
+  <meta property="og:image" content="https://nikk7007.github.io/links/assets/foto.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Nikolas Leme Santos · links" />
+  <meta name="twitter:description" content="Todos os meus links em um só lugar." />
+  <meta name="twitter:image" content="https://nikk7007.github.io/links/assets/foto.jpg" />
 
   <!-- tema inicial: localStorage > preferência do sistema (evita flash) -->
   <script>
@@ -29,9 +42,9 @@
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
 
-  <!-- fundo 3D ambiente (Three.js via CDN, ES modules) -->
+  <!-- fundo 3D ambiente (Three.js vendorizado — funciona offline, como o QR) -->
   <script type="importmap">
-    { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+    { "imports": { "three": "./vendor/three.module.js" } }
   </script>
 </head>
 <body>
