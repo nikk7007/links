@@ -224,8 +224,26 @@ window.UI = (function () {
     if (qrTrigger) { qrTrigger.focus(); qrTrigger = null; }
   });
   document.getElementById("qr-close").addEventListener("click", closeQR);
-  document.getElementById("qr-close-2").addEventListener("click", closeQR);
   document.getElementById("qr-download").addEventListener("click", () => QR.download(qrCanvas, qrFilename));
 
-  return { renderCards, registerAdmin, escapeHtml };
+  // copiar a URL exibida (clipboard exige https/localhost; em file:// avisa)
+  const copyBtn = document.getElementById("qr-copy");
+  let copyTimer;
+  copyBtn.addEventListener("click", async () => {
+    let label = "Copiado!";
+    try {
+      await navigator.clipboard.writeText(qrUrl.textContent);
+      copyBtn.classList.add("is-success");
+    } catch (_) {
+      label = "Não foi possível";
+    }
+    copyBtn.textContent = label;
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => {
+      copyBtn.classList.remove("is-success");
+      copyBtn.textContent = "Copiar link";
+    }, 1300);
+  });
+
+  return { renderCards, registerAdmin, escapeHtml, openQR };
 })();

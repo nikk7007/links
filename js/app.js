@@ -17,7 +17,20 @@
     });
   }
 
-  /* Store -> UI */
+  /* compartilhar a página (só no público): share nativo no toque, QR no resto */
+  const shareBtn = document.getElementById("share-page");
+  if (shareBtn) {
+    shareBtn.addEventListener("click", async () => {
+      const url = location.href.split("#")[0];
+      if (navigator.share && matchMedia("(pointer: coarse)").matches) {
+        try { await navigator.share({ title: document.title, url }); } catch (_) {} // cancelar é ok
+      } else {
+        UI.openQR({ title: "Compartilhar esta página", url }, shareBtn);
+      }
+    });
+  }
+
+  /* Store -> UI; seed: rascunho do admin (se houver) > dados publicados */
   Store.subscribe(UI.renderCards);
-  Store.seed(window.MOCK_LINKS || []);
+  Store.seed((window.Publish && Publish.initialData()) || window.MOCK_LINKS || []);
 })();

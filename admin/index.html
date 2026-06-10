@@ -113,6 +113,39 @@
         </div>
       </form>
     </section>
+
+    <!-- publicação: grava js/mock.js no repo via API do GitHub (token só do dono) -->
+    <section class="form-panel publish-panel" id="publish-panel" aria-labelledby="pub-title">
+      <h2 class="form-panel__title" id="pub-title">Publicação</h2>
+
+      <p class="pub-status" id="pub-status">
+        <span class="pub-dot" aria-hidden="true"></span>
+        <span id="pub-status-text">Tudo publicado.</span>
+      </p>
+
+      <div class="field" id="field-token">
+        <label for="f-token">Token do GitHub</label>
+        <input class="input" id="f-token" name="token" type="password" autocomplete="off"
+               placeholder="github_pat_…" aria-describedby="token-help" />
+        <span class="helper" id="token-help">
+          Fine-grained token com acesso só ao repositório <strong>nikk7007/links</strong> e
+          permissão <strong>Contents: read &amp; write</strong>
+          (GitHub → Settings → Developer settings → Fine-grained tokens).
+          Fica salvo apenas neste navegador.
+        </span>
+      </div>
+      <p class="helper pub-token-saved" id="token-saved" hidden>
+        Token salvo neste navegador.
+        <button class="text-link" id="token-change" type="button">Trocar token</button>
+      </p>
+
+      <span class="error" id="e-pub" role="alert" aria-live="polite"></span>
+
+      <div class="form-actions">
+        <button class="btn btn--ghost" id="discard-btn" type="button">Descartar rascunho</button>
+        <button class="btn btn--primary" id="publish-btn" type="button">Publicar</button>
+      </div>
+    </section>
   </main>
 
   <!-- modal QR -->
@@ -126,19 +159,21 @@
     <div class="qr-plate"><div id="qr-canvas"></div></div>
     <p class="qr-modal__url" id="qr-url"></p>
     <div class="qr-modal__actions">
-      <button class="btn btn--ghost" id="qr-close-2" type="button">Fechar</button>
+      <!-- fechar já tem 3 saídas (X, backdrop, Esc); o ghost vira "copiar" -->
+      <button class="btn btn--ghost" id="qr-copy" type="button">Copiar link</button>
       <button class="btn btn--primary" id="qr-download" type="button">Baixar PNG</button>
     </div>
   </dialog>
 
-  <!-- scripts: vendor -> mock -> store -> qr -> ui -> admin -> app
-       (admin.js registra os handlers do formulário ANTES do seed em app.js) -->
+  <!-- scripts: vendor -> mock -> store -> qr -> ui -> admin -> publish -> app
+       (admin.js e publish.js precisam vir ANTES do seed em app.js) -->
   <script src="../vendor/qr-code-styling.js"></script>
   <script src="../js/mock.js"></script>
   <script src="../js/store.js"></script>
   <script src="../js/qr.js"></script>
   <script src="../js/ui.js"></script>
   <script src="../js/admin.js"></script>
+  <script src="../js/publish.js"></script>
   <script src="../js/app.js"></script>
 </body>
 </html>

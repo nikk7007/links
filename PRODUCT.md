@@ -19,8 +19,9 @@ O admin é ferramenta de apoio, secundária.
 
 Reunir os links pessoais do dono em uma página calma e bem-feita, com cards ordenáveis,
 pastas (accordion, 1 nível) e geração de QR code offline para compartilhar cada link.
-Sem backend nesta fase: dados vêm de seed (`mock.js`) e estado em memória; persistência
-e autenticação ficam para a infra depois. Sucesso = uma página que carrega rápido,
+Sem backend próprio: os dados vivem em `js/mock.js` no repo e o admin publica
+mudanças via API do GitHub com um token que só o dono tem (rascunho local até
+publicar). Sucesso = uma página que carrega rápido,
 funciona bem no celular e passa a impressão de cuidado e bom gosto — não de template genérico.
 
 ## Brand Personality

@@ -524,6 +524,40 @@
 .btn--ghost:hover {
   background: var(--surface-2);
 }
+.btn--ghost.is-success {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+/* ---------- painel de publicação (admin) ---------- */
+.publish-panel {
+  margin-top: var(--sp-8);
+}
+/* status: ponto + frase — quieto quando publicado, accent quando há pendência */
+.pub-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--sp-5);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.pub-status .pub-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  transition: background-color 200ms ease;
+}
+.pub-status.is-dirty {
+  color: var(--text);
+}
+.pub-status.is-dirty .pub-dot {
+  background: var(--accent);
+}
+.pub-token-saved {
+  margin-bottom: var(--sp-5);
+}
 
 /* ---------- modal QR ---------- */
 .qr-modal {

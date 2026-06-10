@@ -30,8 +30,9 @@ links/
 │   ├── store.js           # estado em memória + operações (add/edit/remove/sort)
 │   ├── ui.js              # render dos cards + modal QR (comum às duas páginas)
 │   ├── admin.js           # formulário do painel (carregado só pelo admin)
+│   ├── publish.js         # publicação via GitHub API + rascunho local (só admin)
 │   ├── qr.js              # wrapper para gerar QR via lib offline
-│   └── app.js             # ponto de entrada: theme toggle + liga store↔ui
+│   └── app.js             # ponto de entrada: theme toggle, compartilhar, liga store↔ui
 ├── vendor/
 │   ├── qr-code-styling.js # biblioteca de QR estilizado offline (vendorizada localmente)
 │   └── three.module.js    # Three.js (fundo 3D) vendorizado — sem CDN em runtime
@@ -51,8 +52,8 @@ As páginas usam os **mesmos** CSS/JS comuns (o admin referencia com `../`).
 > (seed do `mock.js`) — proteção de acesso e persistência ficam para a infra depois.
 
 Ordem dos assets: CSS `tokens → base → layout → components`; JS no fim do `<body>`
-`vendor/qr-code-styling.js → mock.js → store.js → qr.js → ui.js → (admin.js, só no admin) → app.js`
-(o `admin.js` precisa vir antes do `app.js`, que dispara o seed/primeiro render).
+`vendor/qr-code-styling.js → mock.js → store.js → qr.js → ui.js → (admin.js → publish.js, só no admin) → app.js`
+(`admin.js` e `publish.js` precisam vir antes do `app.js`, que dispara o seed/primeiro render).
 
 ## Modelo de dados (`js/mock.js` / `js/store.js`)
 Array de itens (links e pastas):
@@ -120,6 +121,28 @@ Array de itens (links e pastas):
 5. Clicar "Gerar QR" → modal mostra o QR; escanear com o celular abre a URL do card.
 6. Validar responsividade reduzindo a largura da janela.
 
+## Publicação (GitHub como backend)
+O site fica no GitHub Pages e os dados vivem em `js/mock.js` dentro do próprio repo —
+então **publicar = commitar o arquivo de dados**, e quem protege a escrita é o GitHub.
+
+Fluxo (`js/publish.js`, só no admin):
+1. **Rascunho:** toda mudança no Store é salva em `localStorage["links:draft"]`;
+   o admin re-seeda do rascunho no load (edições sobrevivem ao refresh).
+   "Descartar rascunho" volta ao `mock.js` publicado.
+2. **Publicar:** gera o conteúdo novo de `js/mock.js` (`window.MOCK_LINKS = [...]`),
+   busca o `sha` atual (`GET /repos/nikk7007/links/contents/js/mock.js`) e grava com
+   `PUT` (Contents API, commit "Atualiza links via admin" na `main`). O Pages
+   redeploya sozinho em ~1 min.
+3. **Status:** snapshot do último publicado em `localStorage["links:published"]`;
+   ponto/texto "há alterações não publicadas" quando o estado atual difere.
+
+**Token (a chave de tudo):** fine-grained PAT criado em GitHub → Settings →
+Developer settings → Fine-grained tokens, com acesso **somente** ao repo
+`nikk7007/links` e permissão única **Contents: read & write**. Colado uma vez no
+admin, fica em `localStorage["links:token"]` **do navegador do dono**. O `/admin/`
+público é inofensivo: sem token, edições não persistem em lugar nenhum.
+Se o token vazar, basta revogá-lo no GitHub — o estrago possível se limita a esse repo.
+
 ## Fora de escopo (depois)
-- Backend / persistência real, autenticação, separação visualizar-vs-editar (infra).
+- Backend "de verdade" (banco/auth próprios) — o GitHub cobre o caso atual.
 - Visual definitivo / branding.
