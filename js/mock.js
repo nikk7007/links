@@ -38,7 +38,7 @@ window.MOCK_LINKS = [
     "parentId": "f-proj",
     "title": "Spin",
     "subtitle": "Veja sua sorte",
-    "url": "https://nikk7007.github.io/portal/public/spin",
+    "url": "https://spin.nikolasleme.com.br",
     "order": 1,
     "featured": false
   },
