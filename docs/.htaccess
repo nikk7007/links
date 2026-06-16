@@ -1,0 +1,3 @@
+# docs/ é material de desenvolvimento (PRODUCT.md, design.md, plano.md).
+# A aplicação não usa nada daqui — bloqueia o acesso direto pela web.
+Require all denied

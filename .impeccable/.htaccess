@@ -1,0 +1,3 @@
+# .impeccable/ guarda críticas/notas de desenvolvimento. Não faz parte da app —
+# bloqueia o acesso direto pela web.
+Require all denied
