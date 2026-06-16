@@ -30,7 +30,23 @@
     });
   }
 
-  /* Store -> UI; seed: rascunho do admin (se houver) > dados publicados */
+  /* Store -> UI; seed: rascunho do admin (se houver) > MySQL (api/links.php) > mock offline.
+     A API mora em /api/ na raiz do site; o admin fica em /admin/, então sobe um nível. */
   Store.subscribe(UI.renderCards);
-  Store.seed((window.Publish && Publish.initialData()) || window.MOCK_LINKS || []);
+
+  const apiBase = location.pathname.includes("/admin/") ? "../" : "";
+
+  async function loadInitial() {
+    if (window.Publish && Publish.initialData) {
+      const draft = Publish.initialData();
+      if (draft) return draft; // edição local ainda não publicada tem prioridade
+    }
+    try {
+      const res = await fetch(apiBase + "api/links.php", { headers: { Accept: "application/json" } });
+      if (res.ok) return await res.json();
+    } catch (_) {} // sem servidor (ex.: GitHub Pages / offline): cai pro mock
+    return window.MOCK_LINKS || [];
+  }
+
+  loadInitial().then((data) => Store.seed(data));
 })();

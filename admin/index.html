@@ -222,7 +222,7 @@
         </form>
       </section>
 
-      <!-- publicação: grava js/mock.js no repo via API do GitHub (token só do dono) -->
+      <!-- publicação: grava os links no MySQL via api/links.php (sessão por senha) -->
       <section
         class="form-panel publish-panel"
         id="publish-panel"
@@ -235,21 +235,21 @@
           <span id="pub-status-text">Tudo publicado.</span>
         </p>
 
-        <div class="field" id="field-token">
-          <label for="f-token">Token</label>
+        <div class="field" id="field-pass">
+          <label for="f-pass">Senha do painel</label>
           <input
             class="input"
-            id="f-token"
-            name="token"
+            id="f-pass"
+            name="password"
             type="password"
-            autocomplete="off"
+            autocomplete="current-password"
             placeholder="* * * * * * * *"
           />
         </div>
-        <p class="helper pub-token-saved" id="token-saved" hidden>
-          Token salvo.
-          <button class="text-link" id="token-change" type="button">
-            Trocar
+        <p class="helper pub-token-saved" id="sess-active" hidden>
+          Sessão ativa.
+          <button class="text-link" id="logout-btn" type="button">
+            Sair
           </button>
         </p>
 

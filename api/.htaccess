@@ -1,0 +1,5 @@
+# Bloqueia acesso direto a arquivos sensíveis da API.
+# (config.php já é executado como PHP e não vaza o código-fonte, mas reforçamos.)
+<FilesMatch "(config(\.sample)?\.php|\.sql|SETUP\.md)$">
+  Require all denied
+</FilesMatch>

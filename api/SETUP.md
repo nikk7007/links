@@ -1,0 +1,50 @@
+# Setup da API (Hostinger — PHP + MySQL)
+
+Passo a passo para ligar os links ao MySQL. Faz uma vez só.
+
+## 1. Criar o banco MySQL
+hPanel → **Bancos de dados → Bancos de dados MySQL**:
+1. Crie um banco (ex.: `links`) e um usuário, com senha forte.
+2. Anote os 4 valores: **host** (`localhost`), **nome do banco**, **usuário**, **senha**.
+
+## 2. Criar a tabela e migrar os links atuais
+hPanel → **phpMyAdmin** → selecione o banco → aba **SQL** →
+cole o conteúdo de [`schema.sql`](schema.sql) → **Executar**.
+Isso cria a tabela `links` já com os 8 links de hoje.
+
+## 3. Configurar credenciais
+1. Copie `config.sample.php` para **`config.php`** (mesma pasta `api/`).
+2. Preencha `db_name`, `db_user`, `db_pass` com os dados do passo 1.
+3. `config.php` **não** vai pro Git (está no `.gitignore`) — preencha direto no servidor.
+
+## 4. Definir a senha do painel
+1. Suba os arquivos e abra no navegador:
+   `https://SEU-DOMINIO/api/make-hash.php?p=SUA_SENHA_DO_PAINEL`
+2. Copie o hash (`$2y$...`) e cole em `admin_pass_hash` no `config.php`.
+3. **Apague `make-hash.php` do servidor.** (Ele existe só pra gerar o hash.)
+
+## 5. Subir os arquivos
+Envie tudo (FTP ou Gerenciador de Arquivos do hPanel) para a pasta pública
+(`public_html`), mantendo a estrutura: `index.html`, `admin/`, `js/`, `css/`,
+`assets/`, `vendor/` e `api/`.
+
+## 6. Testar
+- Página pública: abre e mostra os links (vindos do MySQL).
+- `https://SEU-DOMINIO/api/links.php` → deve devolver um JSON com os links.
+- Admin (`/admin/`): edite algo, digite a **senha do painel** e clique **Publicar**.
+  Recarregue a página pública: a mudança aparece.
+
+## Como funciona
+- **`links.php`** — `GET` lista os links (público); `PUT` substitui a lista
+  inteira no banco (exige sessão).
+- **`login.php` / `logout.php`** — senha → cookie de sessão. Sem token no navegador.
+- O admin continua editando local (rascunho em `localStorage`); **Publicar**
+  manda o lote para o MySQL.
+- Se a API estiver fora do ar, a página cai no `js/mock.js` (cópia offline).
+
+## Segurança
+- `config.php` (credenciais) fica fora do Git e o `.htaccess` bloqueia acesso direto.
+- A senha do painel é guardada como **hash** (`password_hash`), nunca em texto puro.
+- Toda a escrita passa por sessão; a leitura é pública (como deve ser num linktree).
+- Sirva o site por **HTTPS** (Hostinger oferece SSL grátis) para o cookie de sessão
+  viajar seguro.
