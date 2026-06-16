@@ -1,0 +1,44 @@
+name: Deploy (FTP → Hostinger)
+
+# Publica o site no public_html da Hostinger a cada push na main.
+# Envia SÓ o necessário: docs/, .impeccable/, .github/ e arquivos de dev ficam de fora.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # permite disparar manualmente pela aba Actions
+
+concurrency:
+  group: deploy-ftp
+  cancel-in-progress: true
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          # Cadastre estes 3 valores em: Settings > Secrets and variables > Actions
+          server: ${{ secrets.FTP_HOST }}        # ex.: ftp.seudominio.com (hPanel > FTP Accounts)
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+
+          # A conta FTP (u646012344.sampling) já abre dentro do public_html,
+          # então a raiz do deploy é "./".
+          server-dir: ./
+
+          # Exclusões: precisam repetir os defaults da action (.git/node_modules)
+          # + os nossos. Tudo que casar aqui NÃO é enviado NEM apagado no servidor.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            docs/**
+            .impeccable/**
+            api/config.sample.php
+            api/config.php
+            **/.DS_Store
+            **/Thumbs.db
