@@ -39,6 +39,46 @@ function require_admin() {
   if (empty($_SESSION['admin'])) json_out(['error' => 'unauthorized'], 401);
 }
 
+/* ---- rate-limit do login: contador por IP em arquivo (funciona em shared host) ----
+   Bloqueia novas tentativas após MAX falhas dentro de WINDOW segundos. Como o
+   painel tem uma única senha, o brute-force online é o principal vetor. */
+const LOGIN_MAX_FAILS = 8;
+const LOGIN_WINDOW    = 900; // 15 min
+
+function _login_throttle_file() {
+  $ip = $_SERVER['REMOTE_ADDR'] ?? 'cli';
+  return sys_get_temp_dir() . '/links_login_' . hash('sha256', $ip) . '.json';
+}
+
+function _login_throttle_read() {
+  $f = _login_throttle_file();
+  if (is_file($f)) {
+    $j = json_decode((string) @file_get_contents($f), true);
+    if (is_array($j) && isset($j['count'], $j['first'])) return $j;
+  }
+  return ['count' => 0, 'first' => time()];
+}
+
+/* true se o IP estourou o limite dentro da janela atual */
+function login_is_blocked() {
+  $s = _login_throttle_read();
+  if (time() - $s['first'] > LOGIN_WINDOW) return false; // janela expirou
+  return $s['count'] >= LOGIN_MAX_FAILS;
+}
+
+/* registra uma falha (reinicia a contagem se a janela já expirou) */
+function login_register_failure() {
+  $s = _login_throttle_read();
+  if (time() - $s['first'] > LOGIN_WINDOW) $s = ['count' => 0, 'first' => time()];
+  $s['count']++;
+  @file_put_contents(_login_throttle_file(), json_encode($s), LOCK_EX);
+}
+
+/* limpa o contador após um login bem-sucedido */
+function login_reset() {
+  @unlink(_login_throttle_file());
+}
+
 /* mesma whitelist do front: só http/https/mailto/tel passam (barra javascript: etc.) */
 function sanitize_url($v) {
   $s = trim((string) $v);

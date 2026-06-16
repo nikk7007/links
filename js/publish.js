@@ -143,6 +143,7 @@ window.Publish = (function () {
 
   function friendlyError(e) {
     if (e.status === 401) return "Senha incorreta ou sessão expirada.";
+    if (e.status === 429) return "Muitas tentativas. Aguarde alguns minutos e tente de novo.";
     if (e.status === 400) return "Dados inválidos ao publicar.";
     if (e.status === 500) return "Erro no servidor ao salvar. Tente de novo.";
     if (e.status) return "Erro da API (" + e.status + ").";

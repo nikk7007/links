@@ -1,15 +1,22 @@
 <?php
-/* make-hash.php — FERRAMENTA DE USO ÚNICO.
-   Abra no navegador: .../api/make-hash.php?p=SUA_SENHA
-   Copie o hash gerado para 'admin_pass_hash' no config.php e DEPOIS APAGUE este
-   arquivo do servidor (ele permite descobrir hashes de senhas que você digitar). */
-header('Content-Type: text/plain; charset=utf-8');
+/* make-hash.php — gera o hash da senha do painel. USO VIA TERMINAL (CLI) apenas.
 
-$p = isset($_GET['p']) ? (string) $_GET['p'] : '';
-if ($p === '') {
-  echo "Use ?p=SUA_SENHA para gerar o hash.\n";
-  echo "Depois cole o resultado em config.php (admin_pass_hash) e APAGUE este arquivo.\n";
+   Uso:  php api/make-hash.php SUA_SENHA
+
+   Copie o hash gerado ($2y$...) para 'admin_pass_hash' no config.php.
+   Por segurança este arquivo RECUSA execução via web: não é um endpoint público
+   (rodar bcrypt sob entrada de visitantes seria um vetor de DoS/abuso). O
+   .htaccess também bloqueia o acesso direto a ele como reforço. */
+
+if (PHP_SAPI !== 'cli') {
+  http_response_code(404);
   exit;
+}
+
+$p = $argv[1] ?? '';
+if ($p === '') {
+  fwrite(STDERR, "Uso: php make-hash.php SUA_SENHA\n");
+  exit(1);
 }
 
 echo password_hash($p, PASSWORD_DEFAULT) . "\n";

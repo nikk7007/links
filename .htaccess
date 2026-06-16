@@ -1,0 +1,24 @@
+# .htaccess (raiz) — hardening de segurança do site.
+
+# 1. Força HTTPS (Hostinger oferece SSL grátis). Sem isso o cookie de sessão do
+#    painel poderia viajar em texto puro.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# 2. Cabeçalhos de segurança.
+<IfModule mod_headers.c>
+  # HSTS: só faz sentido (e só é enviado) sob HTTPS.
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+  # CSP: só recursos próprios + Google Fonts. 'unsafe-inline' é necessário para o
+  # <script> de tema inicial (index.html) e os estilos inline de animação dos cards.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+</IfModule>
