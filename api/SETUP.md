@@ -50,24 +50,14 @@ Envie tudo (FTP ou Gerenciador de Arquivos do hPanel) para a pasta pública
 - Admin (`/admin/`): edite algo, digite a **senha do painel** e clique **Publicar**.
   Recarregue a página pública: a mudança aparece.
 
-## 7. Deploy automático (GitHub Actions via FTP)
-O repositório tem um workflow ([`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml))
-que, a cada push na `main`, envia **só o necessário** pro `public_html` por FTP
-(`docs/`, `.impeccable/`, `.github/` e arquivos de dev ficam de fora; o
-`api/config.php` do servidor nunca é tocado).
+## 7. Atualizar o site depois
+**Não há deploy automático.** Para publicar mudanças nos arquivos (`index.html`,
+`js/`, `css/`, `api/`, etc.), envie-os manualmente pro `public_html` pelo
+**Gerenciador de Arquivos do hPanel** ou por FTP, mantendo a estrutura de pastas.
+Nunca sobrescreva o `api/config.php` do servidor (é só dele).
 
-Para ativar, crie uma conta FTP no hPanel (**Arquivos → Contas FTP**) e cadastre
-3 secrets no GitHub (**Settings → Secrets and variables → Actions → New repository secret**):
-
-| Secret | Valor |
-|---|---|
-| `FTP_HOST` | host FTP (ex.: `ftp.seudominio.com` ou o IP mostrado no hPanel) |
-| `FTP_USERNAME` | usuário da conta FTP |
-| `FTP_PASSWORD` | senha da conta FTP |
-
-> Se a conta FTP já abrir **dentro** do `public_html`, troque `server-dir` no
-> workflow de `/public_html/` para `./`. O primeiro deploy envia tudo; os
-> seguintes mandam só o que mudou.
+> Conteúdo (links/pastas) não precisa de upload: é editado pelo painel `/admin/`
+> e salvo direto no MySQL pelo botão **Publicar**.
 
 ## Como funciona
 - **`links.php`** — `GET` lista os links (público); `PUT` substitui a lista
