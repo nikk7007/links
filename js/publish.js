@@ -199,7 +199,7 @@ window.Publish = (function () {
   discardBtn.addEventListener("click", async () => {
     if (isDirty() && !confirm("Descartar as alterações não publicadas?")) return;
     store.del(K_DRAFT);
-    let data = window.MOCK_LINKS || [];
+    let data = [];
     try {
       const res = await fetch(API + "links.php", { headers: { Accept: "application/json" } });
       if (res.ok) data = await res.json();

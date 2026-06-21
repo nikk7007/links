@@ -21,13 +21,19 @@ window.Store = (function () {
     }
   }
 
+  // o banco usa id NUMÉRICO; o front trata id como texto opaco (dataset.id sempre
+  // volta string e é comparado com ===). Convertendo aqui, número e string batem.
+  function asId(v) {
+    return v === null || v === undefined || v === "" ? null : String(v);
+  }
+
   function normalize(l) {
     const kind = l.kind === "folder" ? "folder" : "link";
     return {
-      id: l.id || uid(),
+      id: asId(l.id) || uid(),
       kind: kind,
       // pasta é sempre topo (1 nível) e não tem URL
-      parentId: kind === "folder" ? null : (l.parentId || null),
+      parentId: kind === "folder" ? null : asId(l.parentId),
       title: (l.title || "").trim(),
       subtitle: (l.subtitle || "").trim(),
       url: kind === "folder" ? "" : safeUrl(l.url),

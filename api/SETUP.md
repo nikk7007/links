@@ -7,10 +7,13 @@ hPanel → **Bancos de dados → Bancos de dados MySQL**:
 1. Crie um banco (ex.: `links`) e um usuário, com senha forte.
 2. Anote os 4 valores: **host** (`localhost`), **nome do banco**, **usuário**, **senha**.
 
-## 2. Criar a tabela e migrar os links atuais
-hPanel → **phpMyAdmin** → selecione o banco → aba **SQL** →
-cole o conteúdo de [`schema.sql`](schema.sql) → **Executar**.
-Isso cria a tabela `links` já com os 8 links de hoje.
+## 2. Criar a tabela (e, se quiser, os links iniciais)
+hPanel → **phpMyAdmin** → selecione o banco → aba **SQL**:
+1. Cole o conteúdo de [`schema.sql`](schema.sql) → **Executar**. Cria a tabela
+   `links` (só a estrutura, vazia). Faz uma vez só.
+2. (Opcional) Cole o conteúdo de [`seed.sql`](seed.sql) → **Executar** para já
+   começar com os links de exemplo. Esse arquivo também serve de **backup**
+   simples: reexecute-o para voltar ao estado inicial.
 
 ## 3. Configurar credenciais
 1. Copie `config.sample.php` para **`config.php`** (mesma pasta `api/`).
@@ -72,7 +75,8 @@ Para ativar, crie uma conta FTP no hPanel (**Arquivos → Contas FTP**) e cadast
 - **`login.php` / `logout.php`** — senha → cookie de sessão. Sem token no navegador.
 - O admin continua editando local (rascunho em `localStorage`); **Publicar**
   manda o lote para o MySQL.
-- Se a API estiver fora do ar, a página cai no `js/mock.js` (cópia offline).
+- A fonte da verdade é o MySQL. Se a API estiver fora do ar, a página mostra a
+  lista vazia (não há mais cópia offline/mock).
 
 ## Segurança
 - `config.php` (credenciais) fica fora do Git e o `.htaccess` bloqueia acesso direto.

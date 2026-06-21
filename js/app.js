@@ -30,7 +30,7 @@
     });
   }
 
-  /* Store -> UI; seed: rascunho do admin (se houver) > MySQL (api/links.php) > mock offline.
+  /* Store -> UI; seed: rascunho do admin (se houver) > MySQL (api/links.php).
      A API mora em /api/ na raiz do site; o admin fica em /admin/, então sobe um nível. */
   Store.subscribe(UI.renderCards);
 
@@ -44,8 +44,8 @@
     try {
       const res = await fetch(apiBase + "api/links.php", { headers: { Accept: "application/json" } });
       if (res.ok) return await res.json();
-    } catch (_) {} // sem servidor (ex.: GitHub Pages / offline): cai pro mock
-    return window.MOCK_LINKS || [];
+    } catch (_) {} // servidor fora do ar: lista vazia (a fonte da verdade é o MySQL)
+    return [];
   }
 
   loadInitial().then((data) => Store.seed(data));
