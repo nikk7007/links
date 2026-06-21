@@ -150,6 +150,23 @@ window.Publish = (function () {
     return "Sem conexão com o servidor.";
   }
 
+  /* recarrega a lista do servidor e re-semeia o Store. Depois de publicar, faz
+     o painel passar a refletir os ids NUMÉRICOS reais do MySQL (e não os ids
+     temporários "l_..." dos itens recém-criados). Não apaga nada se o servidor
+     estiver inacessível (evita zerar a tela após um PUT que deu certo). */
+  async function reloadFromServer() {
+    let data = null;
+    try {
+      const res = await fetch(API + "links.php", { headers: { Accept: "application/json" } });
+      if (res.ok) data = await res.json();
+    } catch (_) {}
+    if (!Array.isArray(data)) return false;
+    Store.seed(data);                // dispara o subscribe: atualiza current e K_DRAFT
+    store.set(K_PUBLISHED, current); // o que veio do servidor passa a ser o "publicado"
+    updateStatus();
+    return true;
+  }
+
   /* ---------- publicar ---------- */
   let publishing = false;
   publishBtn.addEventListener("click", async () => {
@@ -176,6 +193,8 @@ window.Publish = (function () {
         passInput.value = "";
       }
       await putLinks();
+      // re-sincroniza com o banco: o painel passa a mostrar os ids numéricos
+      await reloadFromServer();
       store.set(K_PUBLISHED, current);
       updateStatus();
       publishBtn.classList.add("is-success");
@@ -198,15 +217,7 @@ window.Publish = (function () {
   /* ---------- descartar rascunho (recarrega do servidor) ---------- */
   discardBtn.addEventListener("click", async () => {
     if (isDirty() && !confirm("Descartar as alterações não publicadas?")) return;
-    store.del(K_DRAFT);
-    let data = [];
-    try {
-      const res = await fetch(API + "links.php", { headers: { Accept: "application/json" } });
-      if (res.ok) data = await res.json();
-    } catch (_) {}
-    Store.seed(data);
-    store.set(K_PUBLISHED, current); // o que veio do servidor passa a ser o "publicado"
-    updateStatus();
+    await reloadFromServer(); // joga fora o rascunho local e recarrega do banco
   });
 
   return { initialData };
