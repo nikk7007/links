@@ -20,7 +20,10 @@
 
   # CSP: só recursos próprios + Google Fonts. 'unsafe-inline' é necessário para o
   # <script> de tema inicial (index.html) e os estilos inline de animação dos cards.
-  # connect-src inclui data: porque a lib do QR (qr-code-styling) busca a imagem
-  # do logo (data: URL) via XMLHttpRequest; sem isso o QR não renderiza.
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+  # Notas:
+  # - connect-src inclui data: porque a lib do QR (qr-code-styling) busca a
+  #   imagem do logo (data: URL) via XMLHttpRequest; sem isso o QR não renderiza.
+  # - static.cloudflareinsights.com (script) e cloudflareinsights.com (envio do
+  #   beacon) liberam o Cloudflare Web Analytics injetado pelo Cloudflare.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' data: https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
 </IfModule>
