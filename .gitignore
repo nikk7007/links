@@ -1,2 +1,6 @@
 .claude
 api/config.php
+# segredos: .env em qualquer lugar do projeto (o real fica acima do public_html)
+.env
+*.env
+!.env.example

@@ -15,10 +15,21 @@ hPanel → **phpMyAdmin** → selecione o banco → aba **SQL**:
    começar com os links de exemplo. Esse arquivo também serve de **backup**
    simples: reexecute-o para voltar ao estado inicial.
 
-## 3. Configurar credenciais
-1. Copie `config.sample.php` para **`config.php`** (mesma pasta `api/`).
-2. Preencha `db_name`, `db_user`, `db_pass` com os dados do passo 1.
-3. `config.php` **não** vai pro Git (está no `.gitignore`) — preencha direto no servidor.
+## 3. Configurar credenciais (`.env` — recomendado p/ deploy por Git)
+O app lê as credenciais de um **`.env`** (ou de um `api/config.php`). Com deploy
+por Git, use o `.env` **ACIMA do `public_html`**, assim ele fica fora do repo e
+**não é apagado a cada deploy**:
+
+1. Copie [`.env.example`](../.env.example) para um arquivo **`.env`**.
+2. Preencha `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS` com os dados do passo 1.
+3. Coloque esse `.env` na pasta **acima** do `public_html` (ex.:
+   `/home/SEU_USUARIO/.env`) pelo Gerenciador de Arquivos do hPanel. Faz **uma
+   vez** — sobrevive a todos os deploys.
+
+O código procura, nesta ordem: `LINKS_CONFIG` (env var) → `.env` acima do
+public_html → `links_config.php` acima do public_html → `.env` na raiz do projeto
+→ `api/config.php`. Para rodar **local/Docker**, um `api/config.php`
+(ver `config.sample.php`) também funciona.
 
 ## 4. Definir a senha do painel
 Gere o hash da senha pelo **terminal** (SSH/Terminal do hPanel) — nunca pelo
@@ -34,7 +45,8 @@ ou, sem depender do arquivo:
 php -r "echo password_hash('SUA_SENHA_DO_PAINEL', PASSWORD_DEFAULT), PHP_EOL;"
 ```
 
-Copie o hash gerado (`$2y$...`) e cole em `admin_pass_hash` no `config.php`.
+Copie o hash gerado (`$2y$...`) e cole em `ADMIN_PASS_HASH` no `.env`
+(ou em `admin_pass_hash` no `config.php`).
 
 > `make-hash.php` recusa execução via web e o `.htaccess` bloqueia o acesso
 > direto a ele — não há endpoint público de geração de hash.
