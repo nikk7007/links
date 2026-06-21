@@ -20,5 +20,7 @@
 
   # CSP: só recursos próprios + Google Fonts. 'unsafe-inline' é necessário para o
   # <script> de tema inicial (index.html) e os estilos inline de animação dos cards.
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+  # connect-src inclui data: porque a lib do QR (qr-code-styling) busca a imagem
+  # do logo (data: URL) via XMLHttpRequest; sem isso o QR não renderiza.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
 </IfModule>
