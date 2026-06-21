@@ -6,6 +6,11 @@
   RewriteEngine On
   RewriteCond %{HTTPS} off
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Canonicaliza o host: www -> apex (evita conteúdo duplicado; o site responde
+  # 200 nos dois hosts). Mantém o caminho/querystring.
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
 </IfModule>
 
 # 2. Cabeçalhos de segurança.

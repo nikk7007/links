@@ -65,10 +65,12 @@ window.Publish = (function () {
 
   function updateStatus() {
     const dirty = isDirty();
-    statusEl.classList.toggle("is-dirty", dirty);
-    statusText.textContent = dirty
-      ? "Há alterações não publicadas."
-      : "Tudo publicado.";
+    if (statusEl) statusEl.classList.toggle("is-dirty", dirty);
+    if (statusText) {
+      statusText.textContent = dirty
+        ? "Há alterações não publicadas."
+        : "Tudo publicado.";
+    }
   }
 
   Store.subscribe((list) => {
@@ -83,8 +85,8 @@ window.Publish = (function () {
 
   /* ---------- sessão ---------- */
   function refreshAuthUI() {
-    fieldPass.hidden = authed;
-    sessActive.hidden = !authed;
+    if (fieldPass) fieldPass.hidden = authed;
+    if (sessActive) sessActive.hidden = !authed;
   }
   async function checkAuth() {
     try {
@@ -93,16 +95,19 @@ window.Publish = (function () {
     } catch (_) {}
     refreshAuthUI();
   }
-  logoutBtn.addEventListener("click", async () => {
-    try { await fetch(API + "logout.php"); } catch (_) {}
-    authed = false;
-    refreshAuthUI();
-    passInput.focus();
-  });
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      try { await fetch(API + "logout.php"); } catch (_) {}
+      authed = false;
+      refreshAuthUI();
+      if (passInput) passInput.focus();
+    });
+  }
   checkAuth();
 
   /* ---------- erro ---------- */
   function setError(msg) {
+    if (!errEl) return;
     if (msg) {
       errEl.innerHTML = `${ICON_ALERT}<span>${UI.escapeHtml(msg)}</span>`;
       errEl.classList.add("is-visible");
@@ -169,56 +174,60 @@ window.Publish = (function () {
 
   /* ---------- publicar ---------- */
   let publishing = false;
-  publishBtn.addEventListener("click", async () => {
-    if (publishing) return;
-    setError("");
+  if (publishBtn) {
+    publishBtn.addEventListener("click", async () => {
+      if (publishing) return;
+      setError("");
 
-    // se não há sessão, precisa de senha já no clique
-    let pass = "";
-    if (!authed) {
-      pass = passInput.value.trim();
-      if (!pass) {
-        setError("Digite a senha do painel para publicar.");
-        passInput.focus();
-        return;
-      }
-    }
-
-    publishing = true;
-    publishBtn.disabled = true;
-    publishBtn.textContent = "Publicando…";
-    try {
+      // se não há sessão, precisa de senha já no clique
+      let pass = "";
       if (!authed) {
-        await login(pass);
-        passInput.value = "";
+        pass = passInput ? passInput.value.trim() : "";
+        if (!pass) {
+          setError("Digite a senha do painel para publicar.");
+          if (passInput) passInput.focus();
+          return;
+        }
       }
-      await putLinks();
-      // re-sincroniza com o banco: o painel passa a mostrar os ids numéricos
-      await reloadFromServer();
-      store.set(K_PUBLISHED, current);
-      updateStatus();
-      publishBtn.classList.add("is-success");
-      publishBtn.textContent = "Publicado!";
-      statusText.textContent = "Publicado no servidor.";
-      setTimeout(() => {
-        publishBtn.classList.remove("is-success");
-        publishBtn.textContent = "Publicar";
+
+      publishing = true;
+      publishBtn.disabled = true;
+      publishBtn.textContent = "Publicando…";
+      try {
+        if (!authed) {
+          await login(pass);
+          if (passInput) passInput.value = "";
+        }
+        await putLinks();
+        // re-sincroniza com o banco: o painel passa a mostrar os ids numéricos
+        await reloadFromServer();
+        store.set(K_PUBLISHED, current);
         updateStatus();
-      }, 2500);
-    } catch (e) {
-      setError(friendlyError(e));
-      publishBtn.textContent = "Publicar";
-    } finally {
-      publishing = false;
-      publishBtn.disabled = false;
-    }
-  });
+        publishBtn.classList.add("is-success");
+        publishBtn.textContent = "Publicado!";
+        if (statusText) statusText.textContent = "Publicado no servidor.";
+        setTimeout(() => {
+          publishBtn.classList.remove("is-success");
+          publishBtn.textContent = "Publicar";
+          updateStatus();
+        }, 2500);
+      } catch (e) {
+        setError(friendlyError(e));
+        publishBtn.textContent = "Publicar";
+      } finally {
+        publishing = false;
+        publishBtn.disabled = false;
+      }
+    });
+  }
 
   /* ---------- descartar rascunho (recarrega do servidor) ---------- */
-  discardBtn.addEventListener("click", async () => {
-    if (isDirty() && !confirm("Descartar as alterações não publicadas?")) return;
-    await reloadFromServer(); // joga fora o rascunho local e recarrega do banco
-  });
+  if (discardBtn) {
+    discardBtn.addEventListener("click", async () => {
+      if (isDirty() && !confirm("Descartar as alterações não publicadas?")) return;
+      await reloadFromServer(); // joga fora o rascunho local e recarrega do banco
+    });
+  }
 
   return { initialData };
 })();
